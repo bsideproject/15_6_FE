@@ -1,7 +1,9 @@
+import '@/styles/global.scss';
+
 function App() {
     return (
         <>
-            <div>Hello world!</div>
+            <div className="App">Hello world!</div>
         </>
     );
 }
