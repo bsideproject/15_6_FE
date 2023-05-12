@@ -3,7 +3,7 @@ import '@/styles/global.scss';
 function App() {
     return (
         <>
-            <div className="App">Hello world!</div>
+            <div className="w-full h-screen text-3xl flex justify-center items-center">Hello world!</div>
         </>
     );
 }
