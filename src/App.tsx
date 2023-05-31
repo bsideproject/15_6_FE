@@ -1,9 +1,10 @@
 import '@/styles/global.scss';
+import { Routes } from '@/routes';
 
 function App() {
     return (
         <>
-            <div className="w-full h-screen text-3xl flex justify-center items-center font-suit-regular">QR 결제</div>
+            <Routes />
         </>
     );
 }
