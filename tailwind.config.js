@@ -4,8 +4,8 @@ export default {
     theme: {
         colors: {
             primary: '#FFD21D',
-            ['primary-dark']: '#FCA10F',
-            ['primary-light']: '#FFE747',
+            'primary-dark': '#FCA10F',
+            'primary-light': '#FFE747',
             accent: '#1D6AFF',
             negative: '#FF2B1D',
             warning: '#FFC01D',
@@ -15,6 +15,12 @@ export default {
             fontFamily: {
                 ['suit-regular']: ['SUIT-Regular'],
                 ['suit-bold']: ['SUIT-Bold'],
+            },
+            boxShadow: {
+                normal: '0px -1px 18px rgba(0, 0, 0, 0.07)',
+            },
+            borderColor: {
+                gray: '#D5D5D5',
             },
         },
     },
