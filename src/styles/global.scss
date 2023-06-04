@@ -10,3 +10,47 @@
     font-family: 'SUIT-Bold';
     src: url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT-Bold.woff2') format('woff2');
 }
+@font-face {
+    font-family: 'SUIT-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT-Medium.woff2') format('woff2');
+}
+.headline1 {
+    font-family: 'SUIT-Bold';
+    font-size: 28px;
+    line-height: 140%;
+}
+.headline2 {
+    font-family: 'SUIT-Bold';
+    font-size: 24px;
+    line-height: 140%;
+}
+.title1 {
+    font-family: 'SUIT-Bold';
+    font-size: 20px;
+    line-height: 140%;
+}
+.title2 {
+    font-family: 'SUIT-Bold';
+    font-size: 16px;
+    line-height: 140%;
+}
+.title3 {
+    font-family: 'SUIT-Bold';
+    font-size: 14px;
+    line-height: 140%;
+}
+.body1 {
+    font-family: 'SUIT-Regular';
+    font-size: 16px;
+    line-height: 150%;
+}
+.body2 {
+    font-family: 'SUIT-Regular';
+    font-size: 14px;
+    line-height: 150%;
+}
+.caption1 {
+    font-family: 'SUIT-Medium';
+    font-size: 12px;
+    line-height: 140%;
+}
