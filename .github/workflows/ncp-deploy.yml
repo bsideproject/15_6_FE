@@ -3,7 +3,7 @@ name: ncp deploy
 on:
     push:
         branches:
-            - deploy-test
+            - main
 
 jobs:
     push_to_registry:
@@ -45,8 +45,9 @@ jobs:
                   password: ${{ secrets.NCP_SERVER_PASSWORD }}
                   port: ${{ secrets.NCP_SERVER_PORT }}
                   script: |
+                      docker login --username ${{ secrets.NCP_ACCESS_KEY }} --password-stdin ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
                       docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
-                      docker stop $(docker ps -a -q)
-                      docker rm $(docker ps -a -q)
-                      docker run -d -p 3000:80 ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
+                      docker stop $(docker ps -aq)
+                      docker rm $(docker ps -aq)
+                      docker run -d -p 80:80 ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
                       docker image prune -f
