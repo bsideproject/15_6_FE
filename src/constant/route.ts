@@ -5,4 +5,4 @@ export const routeTitle = [
     { path: '/badge', en: 'badge', ko: '뱃지' },
 ];
 
-export const expectList = ['login', 'register'];
+export const layoutHiddenPaths = ['login', 'register'];

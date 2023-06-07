@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { expectList, routeTitle } from '@/constant/route';
+import { layoutHiddenPaths, routeTitle } from '@/constant/route';
 
 export const useIsBack = () => {
     const location = useLocation();
@@ -9,9 +9,7 @@ export const useIsBack = () => {
 
 export const useIsLayout = () => {
     const location = useLocation();
-    const isLayout = expectList.some((path) => !location.pathname.includes(path));
-
-    return isLayout;
+    return !layoutHiddenPaths.some((path) => location.pathname.includes(path));
 };
 
 export const useTitle = (lang: 'en' | 'ko') => {
