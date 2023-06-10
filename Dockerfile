@@ -23,7 +23,7 @@ RUN rm -rf ./usr/share/nginx/html/*
 COPY --from=base /app/dist /usr/share/nginx/html/
 
 # 작성한 nginx 설정파일을 복사한다. 
-# COPY nginx.conf /etc/nginx/nginx.conf 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 변경된 설정을 잘 적용하기 위해 재시작한다. 
 # RUN service nginx restart 
