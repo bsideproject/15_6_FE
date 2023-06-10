@@ -49,5 +49,5 @@ jobs:
                       docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
                       docker stop $(docker ps -aq)
                       docker rm $(docker ps -aq)
-                      docker run -d -p 80:80 ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
+                      docker run -d -p 80:80 -p 443:443 -v /etc/letsencrypt:/etc/letsencrypt ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
                       docker image prune -f
