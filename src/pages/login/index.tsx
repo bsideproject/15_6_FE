@@ -2,7 +2,7 @@ import KakaoLoginButton from '@/components/buttons/SocialLoginButtons/KakaoLogin
 import AppleLoginButton from '@/components/buttons/SocialLoginButtons/AppleLoginButton';
 import GoogleLoginButton from '@/components/buttons/SocialLoginButtons/GoogleLoginButton';
 import { ReactComponent as LoginContent } from '@/assets/img/icn_login_content.svg';
-import { getUserOS } from '@/utils/userAgent';
+import { getUserOS, OSType } from '@/utils/userAgent';
 
 export default function LoginPage() {
     const userAgent = getUserOS();
@@ -11,7 +11,7 @@ export default function LoginPage() {
         <div className="h-screen flex flex-col justify-center">
             <LoginContent className="mx-auto mb-5" />
             <KakaoLoginButton />
-            {userAgent === 'iOS' && <AppleLoginButton />}
+            {userAgent === OSType.IOS && <AppleLoginButton />}
             <GoogleLoginButton />
         </div>
     );
