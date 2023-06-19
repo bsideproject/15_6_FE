@@ -1,17 +1,11 @@
-export enum OSType {
-    ANDROID = 'Android',
-    IOS = 'iOS',
-    UNKNOWN = 'Unknown',
-}
-
-export const getUserOS = (): OSType => {
+export const getUserOS = (): 'Android' | 'iOS' | 'Unknown' => {
     const userAgent = navigator.userAgent;
 
     if (/android/i.test(userAgent)) {
-        return OSType.ANDROID;
+        return 'Android';
     } else if (/iPad|iPhone|iPod/.test(userAgent)) {
-        return OSType.IOS;
+        return 'iOS';
     } else {
-        return OSType.UNKNOWN;
+        return 'Unknown';
     }
 };
