@@ -16,11 +16,10 @@ export default defineConfig({
                 'apple-touch-icon.png',
                 'android-chrome-512x512.png',
                 'android-chrome-192x192.png',
-                'splash-logo.png',
             ],
             manifest: {
-                name: 'NotToDo',
-                short_name: 'NotToDo',
+                name: 'NotToDoClub',
+                short_name: 'NotToDoClub',
                 description: '안하기 쉽지 않을걸? NotToDo앱',
                 background_color: '#ffffff',
                 theme_color: '#ffffff',
@@ -49,11 +48,6 @@ export default defineConfig({
                     {
                         src: '/apple-touch-icon.png',
                         sizes: '180x180',
-                        type: 'image/png',
-                    },
-                    {
-                        src: '/splash-logo.png',
-                        sizes: '480x134',
                         type: 'image/png',
                     },
                 ],
