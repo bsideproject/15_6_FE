@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        height: -webkit-fill-available;
+    }
+
+    body {
+        height: -webkit-fill-available;
+    }
+
+    /* If using React, set height on the root div as well */
+    #root {
+        height: -webkit-fill-available;
+    }
+}
+
 @font-face {
     font-family: 'SUIT-Regular';
     src: url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT-Regular.woff2') format('woff2');
