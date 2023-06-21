@@ -27,7 +27,7 @@ export default {
                 ['suit-medium']: ['SUIT-Medium'],
             },
             boxShadow: {
-                normal: '0px -1px 18px rgba(0, 0, 0, 0.07)',
+                normal: '-16px 16px 40px rgba(55, 54, 38, 0.2)',
             },
             borderColor: {
                 gray: '#D5D5D5',
