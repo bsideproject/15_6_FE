@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { layoutHiddenPaths, routeTitle } from '@/constant/route';
+import { headerHiddenPaths, bottomNavBarHiddenPaths, routeTitle } from '@/constant/route';
 
 export const useIsBack = () => {
     const location = useLocation();
@@ -7,9 +7,14 @@ export const useIsBack = () => {
     return isBack;
 };
 
-export const useIsLayout = () => {
+export const useHasHeader = () => {
     const location = useLocation();
-    return !layoutHiddenPaths.some((path) => location.pathname.includes(path));
+    return !headerHiddenPaths.some((path) => location.pathname.includes(path));
+};
+
+export const useHasBottomNavBar = () => {
+    const location = useLocation();
+    return !bottomNavBarHiddenPaths.some((path) => location.pathname.includes(path));
 };
 
 export const useTitle = (lang: 'en' | 'ko') => {
