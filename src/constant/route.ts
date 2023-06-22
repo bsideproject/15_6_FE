@@ -5,4 +5,5 @@ export const routeTitle = [
     { path: '/badge', en: 'badge', ko: '뱃지' },
 ];
 
-export const layoutHiddenPaths = ['login', 'register'];
+export const headerHiddenPaths = ['login'];
+export const bottomNavBarHiddenPaths = ['login', 'signup'];
