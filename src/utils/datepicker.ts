@@ -1,4 +1,4 @@
-export const getMonthDayList = (year: number, month: number, week?: number) => {
+export const getMonthDayList = (year: number, month: number) => {
     const dayList = [];
     const lastday = new Date(year, month, 0).getDate();
     const weekday = new Date(year, month - 1).getDay();
