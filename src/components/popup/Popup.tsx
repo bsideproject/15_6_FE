@@ -4,7 +4,7 @@ interface ChildrenProps {
     children: React.ReactNode;
 }
 
-interface PopupProps extends ChildrenProps {
+export interface PopupProps extends ChildrenProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
