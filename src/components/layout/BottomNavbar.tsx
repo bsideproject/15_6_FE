@@ -1,4 +1,4 @@
-interface BottomNavbarProps {
+export interface BottomNavbarProps {
     children: React.ReactNode;
     height: number;
 }

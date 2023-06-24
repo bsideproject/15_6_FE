@@ -1,0 +1,22 @@
+name: auto Build
+
+on:
+    # PR시에만 작동하는 action
+    pull_request:
+        # 브랜치는 main, dev로 제한
+        branches: [main, dev]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@master
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.x
+
+            - run: npm install
+            - run: npm run build

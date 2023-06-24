@@ -2,7 +2,7 @@ interface HeaderChildProps {
     children: React.ReactNode;
 }
 
-interface HeaderProps extends HeaderChildProps {
+export interface HeaderProps extends HeaderChildProps {
     height: number;
     title?: string;
 }

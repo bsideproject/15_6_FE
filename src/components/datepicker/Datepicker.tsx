@@ -3,7 +3,7 @@ import { getMonthDayList, getWeekOfMonth, getWeekDayList } from '@/utils/datepic
 import { ReactComponent as Arrow } from '@/assets/img/icn_arrow.svg';
 import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg';
 
-interface DatePickerProps {
+export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
 }
@@ -16,9 +16,9 @@ export const DatePicker = (props: DatePickerProps) => {
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
     const [currentWeek, setCurrentWeek] = useState<number>(1);
-    const [today, setToday] = useState<Date>(new Date());
+    const [today] = useState<Date>(new Date());
     const [dayList, setDayList] = useState<string[]>([]);
-    const [isWeek, setIsWeek] = useState<boolean>(false);
+    const [isWeek] = useState<boolean>(false);
     const [arrowState, setArrowState] = useState<'left' | 'right' | null>(null);
 
     useEffect(() => {
@@ -88,9 +88,9 @@ export const DatePicker = (props: DatePickerProps) => {
         setCurrentDate(nextWeek);
     };
 
-    const changeMode = () => {
-        setIsWeek(!isWeek);
-    };
+    // const changeMode = () => {
+    //     setIsWeek(!isWeek);
+    // };
 
     const setCurrentWeekValue = (date: Date) => {
         const { year, month, week } = getWeekOfMonth(date);
