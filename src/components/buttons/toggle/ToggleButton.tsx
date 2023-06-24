@@ -1,5 +1,5 @@
 type sizeType = 'sm' | 'md' | 'lg';
-interface ToggleButtonProps {
+export interface ToggleButtonProps {
     size: sizeType;
     isToggle: boolean;
     onClick: React.MouseEventHandler<HTMLDivElement>;
@@ -37,5 +37,5 @@ export const ToggleButton = (props: ToggleButtonProps) => {
 };
 
 ToggleButton.defaultProps = {
-    size: 'md',
+    size: 'md' as sizeType,
 };

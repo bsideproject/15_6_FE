@@ -1,6 +1,6 @@
 import Popup from './Popup';
 
-interface BasePopupProps {
+export interface BasePopupProps {
     isOpen: boolean;
     message: React.ReactNode;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

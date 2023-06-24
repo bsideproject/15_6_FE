@@ -3,7 +3,7 @@ import { getMonthDayList, getWeekOfMonth, getWeekDayList } from '@/utils/datepic
 import { ReactComponent as Arrow } from '@/assets/img/icn_arrow.svg';
 import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg';
 
-interface DatePickerProps {
+export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
 }
