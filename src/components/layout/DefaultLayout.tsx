@@ -13,7 +13,11 @@ import { ReactComponent as Logo } from '@/assets/img/icn_logo.svg';
 import { Header } from '@/components/layout/Header';
 import { useIsBack, useHasBottomNavBar, useHasHeader } from '@/utils/location';
 
-export default function DefaultLayout() {
+type DefaultLayoutProp = {
+    children: React.ReactNode;
+};
+
+export default function DefaultLayout({ children }: DefaultLayoutProp) {
     const router = useNavigate();
     const hasHeader = useHasHeader();
     const hasBottomNavBar = useHasBottomNavBar();
@@ -59,6 +63,7 @@ export default function DefaultLayout() {
                 </Header.Actions> */}
                 </Header>
             )}
+            {children}
             {hasBottomNavBar && (
                 <BottomNavbar height={56}>
                     {bottomMenuItem('홈', '/', <HomeOutline className="w-full" />, <HomeSolid className="w-full" />)}
