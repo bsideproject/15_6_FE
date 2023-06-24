@@ -9,7 +9,8 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_a5e846c7b17e4e3"
   },
   "dependencies": {
     "node-sass": "^8.0.0",
@@ -36,6 +37,7 @@
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.14",
+    "chromatic": "^6.19.9",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
@@ -49,5 +51,7 @@
     "vite": "^4.3.2",
     "vite-plugin-pwa": "^0.14.7",
     "vite-plugin-svgr": "^3.2.0"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "nottodo@0.0.0"
 }
