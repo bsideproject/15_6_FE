@@ -1,5 +1,3 @@
-import { SetStateAction } from 'react';
-
 type sizeType = 'sm' | 'md' | 'lg';
 interface ToggleButtonProps {
     size: sizeType;
