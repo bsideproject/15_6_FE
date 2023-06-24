@@ -31,26 +31,37 @@ type Story = StoryObj<BottomNavbarProps>;
 export const Base: Story = (args: any) => {
     const navCount = 4;
     const [isState, setIsState] = useState<number>(0);
+    const bottomMenuItem = (
+        menuName: string,
+        path: number,
+        defaultImg: React.ReactNode,
+        activeImg: React.ReactNode,
+    ) => {
+        return (
+            <div
+                className={`flex flex-col justify-center items-center gap-1 ${
+                    isState === path ? 'text-primary' : 'text-gray-500'
+                }`}
+                style={{ width: `calc(100%/${navCount})` }}
+                onClick={() => setIsState(path)}
+            >
+                {isState === path ? activeImg : defaultImg}
+                <span>{menuName}</span>
+            </div>
+        );
+    };
     return (
         <div className="w-[360px] h-[640px] relative border">
             <BottomNavbar {...args}>
-                <div style={{ width: `calc(100%/${navCount})` }} onClick={() => setIsState(0)}>
-                    {isState === 0 ? <HomeSolid className="w-full" /> : <HomeOutline className="w-full" />}
-                </div>
-                <div style={{ width: `calc(100%/${navCount})` }} onClick={() => setIsState(1)}>
-                    {isState === 1 ? <ListSolid className="w-full" /> : <ListOutline className="w-full" />}
-                </div>
-                <div style={{ width: `calc(100%/${navCount})` }} onClick={() => setIsState(2)}>
-                    {isState === 2 ? <BadgeSolid className="w-full" /> : <BadgeOutline className="w-full" />}
-                </div>
-                <div style={{ width: `calc(100%/${navCount})` }} onClick={() => setIsState(3)}>
-                    {isState === 3 ? <UserSolid className="w-full" /> : <UserOutline className="w-full" />}
-                </div>
+                {bottomMenuItem('홈', 0, <HomeOutline className="w-full" />, <HomeSolid className="w-full" />)}
+                {bottomMenuItem('리스트', 1, <ListOutline className="w-full" />, <ListSolid className="w-full" />)}
+                {bottomMenuItem('뱃지', 2, <BadgeOutline className="w-full" />, <BadgeSolid className="w-full" />)}
+                {bottomMenuItem('마이페이지', 3, <UserOutline className="w-full" />, <UserSolid className="w-full" />)}
             </BottomNavbar>
         </div>
     );
 };
 
 Base.args = {
-    height: 48,
+    height: 56,
 };
