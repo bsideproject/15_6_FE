@@ -22,6 +22,31 @@ export default function DefaultLayout() {
 
     const navCount = 4;
 
+    const bottomMenuItem = (
+        menuName: string,
+        path: string,
+        defaultImg: React.ReactNode,
+        activeImg: React.ReactNode,
+    ) => {
+        const isActive = () => {
+            if (path === '/') return location.pathname === path;
+            else return location.pathname.startsWith(path);
+        };
+
+        return (
+            <div
+                className={`flex flex-col justify-center items-center gap-1 ${
+                    isActive() ? 'text-primary' : 'text-gray-500'
+                }`}
+                style={{ width: `calc(100%/${navCount})` }}
+                onClick={() => router(path)}
+            >
+                {isActive() ? activeImg : defaultImg}
+                <span>{menuName}</span>
+            </div>
+        );
+    };
+
     return (
         <>
             {hasHeader && (
@@ -35,35 +60,26 @@ export default function DefaultLayout() {
                 </Header>
             )}
             {hasBottomNavBar && (
-                <BottomNavbar height={48}>
-                    <div style={{ width: `calc(100%/${navCount})` }} onClick={() => router('/')}>
-                        {location.pathname === '/' ? (
-                            <HomeSolid className="w-full" />
-                        ) : (
-                            <HomeOutline className="w-full" />
-                        )}
-                    </div>
-                    <div style={{ width: `calc(100%/${navCount})` }} onClick={() => router('/nottodo')}>
-                        {location.pathname.startsWith('/nottodo') ? (
-                            <ListSolid className="w-full" />
-                        ) : (
-                            <ListOutline className="w-full" />
-                        )}
-                    </div>
-                    <div style={{ width: `calc(100%/${navCount})` }} onClick={() => router('/badge')}>
-                        {location.pathname.startsWith('/badge') ? (
-                            <BadgeSolid className="w-full" />
-                        ) : (
-                            <BadgeOutline className="w-full" />
-                        )}
-                    </div>
-                    <div style={{ width: `calc(100%/${navCount})` }} onClick={() => router('/profile')}>
-                        {location.pathname.startsWith('/profile') ? (
-                            <UserSolid className="w-full" />
-                        ) : (
-                            <UserOutline className="w-full" />
-                        )}
-                    </div>
+                <BottomNavbar height={56}>
+                    {bottomMenuItem('홈', '/', <HomeOutline className="w-full" />, <HomeSolid className="w-full" />)}
+                    {bottomMenuItem(
+                        '리스트',
+                        '/nottodo',
+                        <ListOutline className="w-full" />,
+                        <ListSolid className="w-full" />,
+                    )}
+                    {bottomMenuItem(
+                        '뱃지',
+                        '/badge',
+                        <BadgeOutline className="w-full" />,
+                        <BadgeSolid className="w-full" />,
+                    )}
+                    {bottomMenuItem(
+                        '마이페이지',
+                        '/profile',
+                        <UserOutline className="w-full" />,
+                        <UserSolid className="w-full" />,
+                    )}
                 </BottomNavbar>
             )}
         </>
