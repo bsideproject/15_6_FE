@@ -1,3 +1,4 @@
+import { BottomButton } from '@/components/buttons/BottomButton';
 import { useState } from 'react';
 import Terms from './components/Terms';
 
@@ -21,17 +22,26 @@ const SignUpPage = () => {
                         title="[필수] 이용약관 동의"
                         id="이용약관"
                         required
-                        termsUrl="http://localhost:3001/login"
+                        notionId="065c9c927654445ab25ea78db26341fb"
                     />
                     <Terms.TermsItem
                         title="[필수] 개인정보 수집 및 이용동의"
                         id="개인정보"
                         required
-                        termsUrl="http://localhost:3001/login"
+                        notionId="7634fbcfbc324c3fafc8b243e7e70078"
                     />
                 </Terms>
             </div>
-            {isAllAgreed && <button>다음</button>}
+            {isAllAgreed && (
+                <BottomButton
+                    variant="secondary"
+                    clickHandler={() => {
+                        console.log('click');
+                    }}
+                >
+                    다음
+                </BottomButton>
+            )}
         </div>
     );
 };

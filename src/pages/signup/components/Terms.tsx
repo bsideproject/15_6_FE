@@ -1,7 +1,9 @@
 import { ReactComponent as CheckOff } from '@/assets/img/icn_check_off.svg';
 import { ReactComponent as CheckOn } from '@/assets/img/icn_check_on.svg';
+import { BottomModal } from '@/components/modal/BottomModal';
 import { useEffectAfterMount } from '@/hooks/useEffectAfterMount';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { NotionRenderer } from 'react-notion';
 
 type TermsContextType = {
     terms: Term[];
@@ -90,11 +92,13 @@ type TermsItemProps = {
     id: string;
     bold?: boolean;
     required?: boolean;
-    termsUrl: string;
+    notionId: string;
 };
 
-const TermsItem = ({ title, id, required = false }: TermsItemProps) => {
+const TermsItem = ({ title, id, required = false, notionId }: TermsItemProps) => {
     const { addTerm, checkTerm, terms } = useContext(TermsContext) as TermsContextType;
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [notionData, setNotionData] = useState(null);
 
     const checked = terms.find((term) => term.id === id)?.checked || false;
 
@@ -107,6 +111,12 @@ const TermsItem = ({ title, id, required = false }: TermsItemProps) => {
         });
     }, []);
 
+    useEffect(() => {
+        fetch(`https://notion-api.splitbee.io/v1/page/${notionId}`)
+            .then((res) => res.json())
+            .then((data) => setNotionData(data));
+    });
+
     return (
         <div className="flex justify-between items-center">
             <BaseTermItem checked={checked} onChange={(checked) => checkTerm(id, checked)}>
@@ -114,7 +124,12 @@ const TermsItem = ({ title, id, required = false }: TermsItemProps) => {
                     <span className="text-base leading-6 font-normal text-gray-700">{title}</span>
                 </div>
             </BaseTermItem>
-            <button className="mr-5 underline">보기</button>
+            <button className="mr-5 underline" onClick={() => setShowModal(true)}>
+                보기
+            </button>
+            <BottomModal show={showModal} onClose={() => setShowModal(false)}>
+                {notionData && <NotionRenderer blockMap={notionData} />}
+            </BottomModal>
         </div>
     );
 };
