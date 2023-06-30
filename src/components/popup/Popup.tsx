@@ -30,15 +30,21 @@ export const Popup = (props: PopupProps) => {
             onClick={handleWrapperClose}
             className={`wrapper w-full h-screen fixed top-0 left-0 bg-gray-600/50 z-40 ${isOpen ? 'block' : 'hidden'}`}
         >
-            <div className="popup fixed w-[311px] h-[143px] inset-1/2 -translate-y-1/2 -translate-x-1/2 rounded-xl bg-gray-0 z-50">
+            <div className="popup fixed w-[288px] min-h-fit h-auto inset-1/2 -translate-y-1/2 -translate-x-1/2 rounded-xl bg-gray-0 z-50 pt-[36px]">
                 {children}
             </div>
         </div>
     );
 };
 
+const Header = ({ children }: ChildrenProps) => {
+    return <div className="popup-header popup-title1 px-[24px] mb-[12px]">{children}</div>;
+};
+
 const Body = ({ children }: ChildrenProps) => {
-    return <div className="popup-body flex flex-col justify-center items-center w-full h-[100px]">{children}</div>;
+    return (
+        <div className={`popup-body flex flex-col jusitfy-center w-full min-h-fit px-[24px] pb-[28px]`}>{children}</div>
+    );
 };
 
 const Footer = ({ children }: ChildrenProps) => {
@@ -53,9 +59,10 @@ const Footer = ({ children }: ChildrenProps) => {
         return child;
     });
 
-    return <div className="popup-footer w-full h-[43px] flex justify-stretch title2">{childElements}</div>;
+    return <div className="popup-footer w-full min-h-[64px] flex justify-stretch title2">{childElements}</div>;
 };
 
+Popup.Header = Header;
 Popup.Body = Body;
 Popup.Footer = Footer;
 
