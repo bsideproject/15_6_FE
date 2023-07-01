@@ -6,10 +6,12 @@ import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg
 export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
+    startDate?: Date;
+    endDate?: Date;
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-    const { selected, onChange } = props;
+    const { selected, onChange, startDate, endDate } = props;
 
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -117,7 +119,21 @@ export const DatePicker = (props: DatePickerProps) => {
 
     const renderDay = () => {
         return dayList.map((day: string, index: number) => {
+            const newDate = new Date(currentYear, currentMonth - 1, parseInt(day) + 1);
             let disabled = false;
+
+            // 오늘 이전의 날은 전부 disable처리
+            if (newDate < today) {
+                disabled = true;
+            }
+            // 시작 날짜(선택된 날짜) 기준으로 100일 이후는 disable처리
+            if (startDate && endDate) {
+                const hundredDate = new Date(new Date(startDate).setDate(startDate.getDate() + 100));
+                if (newDate > hundredDate) {
+                    disabled = true;
+                }
+            }
+
             if (index < 7 && parseInt(day) > 20) {
                 disabled = true;
             } else if (index > 20 && parseInt(day) < 10) {
@@ -147,25 +163,21 @@ export const DatePicker = (props: DatePickerProps) => {
     return (
         <div className="wrapper w-[320px] h-auto pt-[15px] pr-[20.5px] pb-[18px] pl-[19.5px] m-auto rounded-lg shadow-normal">
             <div className="header w-full">
-                <div className="control flex justify-between items-center">
-                    <div>
-                        <span className="body2 ml-[7.5px]">
-                            {currentYear}년 {currentMonth}월 {isWeek ? `${currentWeek}주차` : ''}
-                        </span>
+                <div className="control flex gap-[20px] justify-center items-center mb-2">
+                    <div
+                        onClick={isWeek ? moveWeekLeft : moveLeft}
+                        className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
+                    >
+                        {arrowState === 'left' ? <ArrowActive className="rotate-180" /> : <Arrow />}
                     </div>
-                    <div className="flex gap-[33px]">
-                        <div
-                            onClick={isWeek ? moveWeekLeft : moveLeft}
-                            className="w-[20px] h-[20px] flex justify-center items-center"
-                        >
-                            {arrowState === 'left' ? <ArrowActive className="rotate-180" /> : <Arrow />}
-                        </div>
-                        <div
-                            onClick={isWeek ? moveWeekRight : moveRight}
-                            className="w-[20px] h-[20px] flex justify-center items-center"
-                        >
-                            {arrowState === 'right' ? <ArrowActive /> : <Arrow className="rotate-180" />}
-                        </div>
+                    <span className="title2">
+                        {currentYear}년 {currentMonth}월 {isWeek ? `${currentWeek}주차` : ''}
+                    </span>
+                    <div
+                        onClick={isWeek ? moveWeekRight : moveRight}
+                        className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
+                    >
+                        {arrowState === 'right' ? <ArrowActive /> : <Arrow className="rotate-180" />}
                     </div>
                     {/* <div className='w-12 flex justify-center items-center border rounded bg-slate-100 hover:bg-slate-200 cursor-pointer' onClick={changeMode}>
                         {isWeek ? '주간' : '월간'}
