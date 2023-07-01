@@ -1,6 +1,6 @@
 export interface BottomNavbarProps {
     children: React.ReactNode;
-    className: string;
+    className?: string;
     height: number;
 }
 export const BottomNavbar = (props: BottomNavbarProps) => {
