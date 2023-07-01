@@ -52,7 +52,7 @@ export const Base: Story = (args: any) => {
     };
     return (
         <div className="w-[360px] h-[640px] relative border">
-            <BottomNavbar {...args}>
+            <BottomNavbar {...args} className="absolute">
                 {bottomMenuItem('홈', 0, <HomeOutline className="w-full" />, <HomeSolid className="w-full" />)}
                 {bottomMenuItem('리스트', 1, <ListOutline className="w-full" />, <ListSolid className="w-full" />)}
                 {bottomMenuItem('뱃지', 2, <BadgeOutline className="w-full" />, <BadgeSolid className="w-full" />)}
