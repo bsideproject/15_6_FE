@@ -45,6 +45,8 @@ export default function NotTodoPage() {
 
     const handleSort = (bool: boolean) => {
         setIsDesc(bool);
+        setIsSortOpen(false);
+        // TODO 리스트 필터링
     };
 
     const handleDeletePopupOpen = () => {
