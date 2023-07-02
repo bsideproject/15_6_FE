@@ -34,5 +34,4 @@ export default {
             },
         },
     },
-    plugins: [require('tailwindcss-safe-area')],
 };

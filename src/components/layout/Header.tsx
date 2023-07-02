@@ -2,7 +2,7 @@ interface HeaderChildProps {
     children: React.ReactNode;
 }
 
-interface HeaderProps extends HeaderChildProps {
+export interface HeaderProps extends HeaderChildProps {
     height: number;
     title?: string;
 }
@@ -10,15 +10,17 @@ interface HeaderProps extends HeaderChildProps {
 export const Header = (props: HeaderProps) => {
     const { children, title, height } = props;
     return (
-        <div
-            className={`header-wrapper w-full px-[20px] bg-white flex justify-between relative`}
-            style={{ height: height }}
-        >
-            <div className="absolute w-1/2 top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 truncate title1">
-                {title}
+        <>
+            <div
+                className={`header-wrapper top-0 left-0 w-full px-[20px] bg-white flex justify-between`}
+                style={{ height: height }}
+            >
+                <div className="absolute w-1/2 top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 truncate title1">
+                    {title}
+                </div>
+                {children}
             </div>
-            {children}
-        </div>
+        </>
     );
 };
 
