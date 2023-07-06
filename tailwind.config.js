@@ -28,6 +28,7 @@ export default {
             },
             boxShadow: {
                 normal: '-16px 16px 40px rgba(55, 54, 38, 0.2)',
+                drop: '0px 0px 12px 0px rgba(9, 9, 9, 0.16)',
             },
             borderColor: {
                 gray: '#D5D5D5',

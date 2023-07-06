@@ -161,7 +161,7 @@ export const DatePicker = (props: DatePickerProps) => {
     };
 
     return (
-        <div className="wrapper w-[320px] h-auto pt-[15px] pr-[20.5px] pb-[18px] pl-[19.5px] m-auto rounded-lg shadow-normal">
+        <div className="wrapper w-full min-w-[280px] h-auto pt-[15px] pr-[20.5px] pb-[18px] pl-[19.5px] m-auto rounded-lg shadow-normal">
             <div className="header w-full">
                 <div className="control flex gap-[20px] justify-center items-center mb-2">
                     <div
