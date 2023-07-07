@@ -2,6 +2,10 @@ import BaseLoginButton from './BaseLoginButton';
 import { ReactComponent as KakaoIcon } from '@/assets/img/icn_kakao.svg';
 
 const KakaoLoginButton = () => {
+    const redirectUri = import.meta.env.PROD
+        ? 'https://nottodoclub.store/login/kakao'
+        : 'http://localhost:8080/login/kakao';
+
     return (
         <BaseLoginButton
             styleObj={{
@@ -9,7 +13,9 @@ const KakaoLoginButton = () => {
                 backgroundColor: '#FEE500',
             }}
             handleClick={() => {
-                console.log('clcik');
+                window.Kakao.Auth.authorize({
+                    redirectUri,
+                });
             }}
         >
             <KakaoIcon />

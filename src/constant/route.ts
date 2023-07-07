@@ -10,4 +10,4 @@ export const routeTitle = [
 export const headerHiddenPaths = ['login'];
 export const headerBackPaths = ['/nottodo/edit'];
 export const headerClosePaths = ['/nottodo/create'];
-export const bottomNavBarHiddenPaths = ['login', 'signup', '/nottodo/create', '/nottodo/edit'];
+export const bottomNavBarHiddenPaths = ['login', 'agreement', '/nottodo/create', '/nottodo/edit'];

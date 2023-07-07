@@ -1,15 +1,33 @@
+import { putAgreement } from '@/api/login';
 import { BottomButton } from '@/components/buttons/BottomButton';
-import { useState } from 'react';
+import { userAgreedState } from '@/recoil/user/atom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import Terms from './components/Terms';
 
-const SignUpPage = () => {
+const AgreementPage = () => {
     const titleList = ['낫투두클럽', '이용 약관에', '동의해 주세요'];
 
     const [isAllAgreed, setIsAllAgreed] = useState<boolean>(false);
+    const [userAgreed, setUserAgreed] = useRecoilState(userAgreedState);
+    const navigate = useNavigate();
+
+    const onClickNext = () => {
+        putAgreement().then(() => {
+            setUserAgreed(true);
+        });
+    };
+
+    useEffect(() => {
+        if (userAgreed) {
+            navigate('/');
+        }
+    }, [userAgreed, navigate]);
 
     return (
         <div>
-            <div className="font-bold text-2xl ml-5 mt-10">
+            <div className="font-bold text-2xl ml-5 pt-10">
                 {titleList.map((title) => (
                     <p key={title}>{title}</p>
                 ))}
@@ -33,12 +51,7 @@ const SignUpPage = () => {
                 </Terms>
             </div>
             {isAllAgreed && (
-                <BottomButton
-                    variant="secondary"
-                    clickHandler={() => {
-                        console.log('click');
-                    }}
-                >
+                <BottomButton variant="secondary" clickHandler={onClickNext}>
                     다음
                 </BottomButton>
             )}
@@ -46,4 +59,4 @@ const SignUpPage = () => {
     );
 };
 
-export default SignUpPage;
+export default AgreementPage;

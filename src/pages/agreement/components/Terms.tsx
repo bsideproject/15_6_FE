@@ -1,7 +1,6 @@
 import { ReactComponent as CheckOff } from '@/assets/img/icn_check_off.svg';
 import { ReactComponent as CheckOn } from '@/assets/img/icn_check_on.svg';
 import { BottomModal } from '@/components/modal/BottomModal';
-import { useEffectAfterMount } from '@/hooks/useEffectAfterMount';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { NotionRenderer } from 'react-notion';
 
@@ -32,6 +31,7 @@ const Terms = ({ children, onAllCheck }: TermsProps) => {
     const [isAllChecked, setIsAllChecked] = useState(false);
 
     const addTerm = (term: Term) => {
+        console.log('add', term);
         setTerms((terms) => [...terms, term]);
     };
 
@@ -102,7 +102,7 @@ const TermsItem = ({ title, id, required = false, notionId }: TermsItemProps) =>
 
     const checked = terms.find((term) => term.id === id)?.checked || false;
 
-    useEffectAfterMount(() => {
+    useEffect(() => {
         addTerm({
             title,
             checked: false,
@@ -115,7 +115,7 @@ const TermsItem = ({ title, id, required = false, notionId }: TermsItemProps) =>
         fetch(`https://notion-api.splitbee.io/v1/page/${notionId}`)
             .then((res) => res.json())
             .then((data) => setNotionData(data));
-    });
+    }, []);
 
     return (
         <div className="flex justify-between items-center">

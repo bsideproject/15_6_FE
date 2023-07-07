@@ -1,15 +1,11 @@
 import '@/styles/global.scss';
-import { Routes } from '@/routes';
-import DefaultLayout from '@/components/layout/DefaultLayout';
-import { Toaster } from 'react-hot-toast';
+import { router } from '@/routes';
+import { RouterProvider } from 'react-router-dom';
 
 function App() {
     return (
         <div className="select-none">
-            <DefaultLayout>
-                <Routes />
-                <Toaster position="bottom-center" containerStyle={{ bottom: 56 + 12 }} />
-            </DefaultLayout>
+            <RouterProvider router={router} />
         </div>
     );
 }

@@ -15,6 +15,11 @@ import { Header } from '@/components/layout/Header';
 import { ConfirmPopup } from '@/components/popup/PopupGroup';
 import { useIsBack, useHasBottomNavBar, useHasHeader, useTitle, useIsClose } from '@/utils/location';
 import { useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userAgreedState, userInfoState } from '@/recoil/user/atom';
+import { useEffect } from 'react';
+import { getUserInfo } from '@/api/login';
+import { useLogIn } from '@/hooks/useLogin';
 
 type DefaultLayoutProp = {
     children: React.ReactNode;
@@ -33,6 +38,30 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
     const [isEditPopup, setIsEditPopup] = useState<boolean>(false);
 
     const navCount = 4;
+
+    const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+    const userAgreed = useRecoilValue(userAgreedState);
+    const navigate = useNavigate();
+    const { isLoggedIn } = useLogIn();
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/login');
+        } else if (!userAgreed) {
+            navigate('/agreement');
+        }
+    }, [isLoggedIn, userAgreed]);
+
+    useEffect(() => {
+        if (isLoggedIn && !userInfo) {
+            getUserInfo().then((data) => {
+                setUserInfo({
+                    email: data.email,
+                    nickName: data.nickname,
+                });
+            });
+        }
+    }, [isLoggedIn, userInfo, setUserInfo]);
 
     const bottomMenuItem = (
         menuName: string,
