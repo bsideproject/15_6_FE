@@ -16,6 +16,7 @@ import { ReactComponent as Keyhole } from '@/assets/img/icn_keyhole.svg';
 import { ReactComponent as Textfile } from '@/assets/img/icn_textfile.svg';
 import { ReactComponent as Message } from '@/assets/img/icn_message.svg';
 import { ReactComponent as Logout } from '@/assets/img/icn_logout.svg';
+import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
 
 export default function ProfilePage() {
     // const { logOut, withdraw } = useLogIn();
@@ -23,20 +24,34 @@ export default function ProfilePage() {
     const userInfo = useRecoilValue(userInfoState);
     const menuTitleList = ['알림 설정', '공지사항', '개인정보 처리방침', '서비스 이용약관', '문의 / 건의하기'];
     const menuIconList = [<Notice />, <Megaphone />, <Keyhole />, <Textfile />, <Message />];
-    const menu = (svg: React.ReactNode, title: string, isArrow: boolean) => {
+    const menuRouterList = [
+        '/profile/alarm',
+        '/profile/notice',
+        '/profile/policy',
+        '/profile/terms',
+        '/profile/contact',
+    ];
+    const menu = (svg: React.ReactNode, title: string, index: number, isArrow: boolean) => {
+        const handleRouter = (idx: number) => {
+            router(menuRouterList[idx]);
+        };
         return (
-            <div className="flex w-full h-14 items-center gap-3">
+            <div className="flex w-full h-14 items-center gap-3" onClick={() => handleRouter(index)}>
                 {svg}
                 <span className="body1 text-gray-900">{title}</span>
                 {isArrow ? <MenuArrow className="ml-auto" /> : null}
             </div>
         );
     };
+    const handleLogout = () => {
+        // TODO logout api 실행
+    };
+
     return (
         <div className="px-5 pt-[60px]">
             <div className="w-full flex flex-col items-center">
                 {/* TODO 이미지 변경 */}
-                <Avatar size="md" src={'https://fakeimg.pl/100/100'} />
+                <Avatar size="md" src={<DefaultProfile />} />
                 <div className="h-3"></div>
                 <div className="text-center title1">{'닉네임'}님</div>
                 <div className="flex items-center gap-1">
@@ -55,11 +70,14 @@ export default function ProfilePage() {
                 <div className="w-full h-[1px] bg-gray-100"></div>
                 <div className="h-[27px]"></div>
                 <div className="w-full flex flex-col gap-1">
-                    {menuTitleList.map((title, index) => menu(menuIconList[index], title, true))}
+                    {menuTitleList.map((title, index) => menu(menuIconList[index], title, index, true))}
                 </div>
                 <div className="h-4"></div>
                 <div className="w-full h-[1px] bg-gray-100"></div>
-                {menu(<Logout />, '로그아웃', false)}
+                <div className="w-full flex w-full h-14 items-center gap-3" onClick={handleLogout}>
+                    <Logout />
+                    <span className="body1 text-gray-900">로그아웃</span>
+                </div>
             </div>
         </div>
     );

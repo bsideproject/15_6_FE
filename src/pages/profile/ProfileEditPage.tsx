@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Avatar } from '@/components/avatar/Avatar';
 import { Input } from '@/components/common/input/Input';
@@ -9,7 +10,7 @@ import { ConfirmPopup } from '@/components/popup/PopupGroup';
 import { ReactComponent as Google } from '@/assets/img/icn_google.svg';
 import { ReactComponent as Kakao } from '@/assets/img/icn_kakao.svg';
 import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
-import { useNavigate } from 'react-router-dom';
+import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
 
 export default function ProfileEditPage() {
     const router = useNavigate();
@@ -46,7 +47,7 @@ export default function ProfileEditPage() {
             <div className="w-full flex flex-col items-center">
                 <div className="h-[60px]"></div>
                 {/* TODO 자신의 이미지로 변경 */}
-                <Avatar size="lg" src="https://fakeimg.pl/100/100" />
+                <Avatar size="lg" src={<DefaultProfile />} />
                 <div className="h-[40px]"></div>
                 <div className="w-full flex items-end gap-2">
                     <div className="w-[232px]">
