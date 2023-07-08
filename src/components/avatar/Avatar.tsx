@@ -1,6 +1,6 @@
 interface AvatarProps {
     size?: 'md' | 'lg';
-    src: string;
+    src: string | React.ReactNode;
 }
 
 export const Avatar = (props: AvatarProps) => {
@@ -11,7 +11,11 @@ export const Avatar = (props: AvatarProps) => {
     };
     return (
         <div className={`${sizeClass(size ?? 'md')} rounded-full flex items-center justify-center`}>
-            <img className="w-full h-full rounded-full" src={src} alt="avatar image" />
+            {typeof src === 'string' ? (
+                <img className="w-full h-full rounded-full" src={src} alt="avatar image" />
+            ) : (
+                src
+            )}
         </div>
     );
 };
