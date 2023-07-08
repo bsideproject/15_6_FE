@@ -15,6 +15,8 @@ export interface InputProps {
     disabled?: boolean;
     icon?: string | React.ReactNode;
     isInputModeNone?: boolean;
+    rows?: number;
+    maxLength?: number;
 }
 export const Input = (props: InputProps) => {
     const {
@@ -31,6 +33,8 @@ export const Input = (props: InputProps) => {
         isInputModeNone,
         type,
         textRef,
+        rows,
+        maxLength,
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isWrapperFocus, setIsWrapperFocus] = useState<boolean>(false);
@@ -104,8 +108,8 @@ export const Input = (props: InputProps) => {
                         disabled={disabled}
                         placeholder={placeHolder}
                         className="w-full outline-none body1 resize-none"
-                        rows={1}
-                        maxLength={100}
+                        rows={rows}
+                        maxLength={maxLength}
                         inputMode={isInputModeNone ? 'none' : 'text'}
                     />
                 )}
