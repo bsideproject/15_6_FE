@@ -1,4 +1,5 @@
-import { Routes as Switch, Route } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 //pages
 import HomePage from '@/pages/home';
@@ -7,19 +8,66 @@ import NotTodoPage from '@/pages/nottodo';
 import NotTodoCreatePage from './pages/nottodo/NotTodoCreatePage';
 import BadgePage from '@/pages/badge';
 import ProfilePage from '@/pages/profile';
-import SignUpPage from './pages/signup';
+import AgreementPage from '@/pages/agreement';
+import LoginRedirect from '@/pages/login/LoginRedirect';
+import DefaultLayout from './components/layout/DefaultLayout';
 
-export const Routes = () => {
-    return (
-        <Switch>
-            <Route path={'/'} element={<HomePage />} />
-            <Route path={'/login'} element={<LoginPage />} />
-            <Route path={'/signup'} element={<SignUpPage />} />
-            <Route path={'/nottodo'} element={<NotTodoPage />} />
-            <Route path={'/nottodo/create'} element={<NotTodoCreatePage />} />
-            <Route path={'/nottodo/edit/:id'} element={<NotTodoCreatePage />} />
-            <Route path={'/badge'} element={<BadgePage />} />
-            <Route path={'/profile'} element={<ProfilePage />} />
-        </Switch>
-    );
-};
+export const router = createBrowserRouter([
+    {
+        path: '/',
+        element: (
+            <DefaultLayout>
+                <Outlet />
+                <Toaster position="bottom-center" containerStyle={{ bottom: 56 + 12 }} />
+            </DefaultLayout>
+        ),
+        children: [
+            {
+                path: '',
+                element: <HomePage />,
+            },
+            {
+                path: 'nottodo',
+                children: [
+                    {
+                        path: '',
+                        element: <NotTodoPage />,
+                    },
+                    {
+                        path: 'create',
+                        element: <NotTodoCreatePage />,
+                    },
+                    {
+                        path: 'edit/:id',
+                        element: <NotTodoCreatePage />,
+                    },
+                ],
+            },
+            {
+                path: 'badge',
+                element: <BadgePage />,
+            },
+            {
+                path: 'profile',
+                element: <ProfilePage />,
+            },
+        ],
+    },
+    {
+        path: '/login',
+        children: [
+            {
+                path: '',
+                element: <LoginPage />,
+            },
+            {
+                path: ':type',
+                element: <LoginRedirect />,
+            },
+        ],
+    },
+    {
+        path: '/agreement',
+        element: <AgreementPage />,
+    },
+]);
