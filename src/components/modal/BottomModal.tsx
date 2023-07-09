@@ -8,10 +8,6 @@ export type BottomModalProps = {
 };
 
 export const BottomModal = ({ show, children, onClose }: BottomModalProps) => {
-    useEffect(() => {
-        console.log(show);
-    }, [show]);
-
     if (show) {
         return (
             <div className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-gray-600/50">
