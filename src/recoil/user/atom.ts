@@ -1,17 +1,20 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
 export type userInfoType = {
     nickName: string;
     email: string;
-} | null;
+    tosYn: 'Y' | 'N';
+};
 
-export const userInfoState = atom<userInfoType>({
+export const userInfoState = atom<userInfoType | null>({
     key: 'userInfo',
     default: null,
 });
 
-// 사용자 이용약관 동의 여부
-export const userAgreedState = atom<boolean>({
+export const userAgreedState = selector({
     key: 'userAgreed',
-    default: true,
+    get: ({ get }) => {
+        const userInfo = get(userInfoState);
+        return userInfo?.tosYn === 'Y';
+    },
 });
