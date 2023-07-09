@@ -28,10 +28,13 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'nottodo',
-                element: <NotTodoPage />,
                 children: [
                     {
-                        path: 'created',
+                        path: '',
+                        element: <NotTodoPage />,
+                    },
+                    {
+                        path: 'create',
                         element: <NotTodoCreatePage />,
                     },
                     {
