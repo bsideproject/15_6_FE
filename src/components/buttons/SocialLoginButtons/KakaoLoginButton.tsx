@@ -13,7 +13,7 @@ const KakaoLoginButton = () => {
                 backgroundColor: '#FEE500',
             }}
             handleClick={() => {
-                window.Kakao.Auth.authorize({
+                Kakao.Auth.authorize({
                     redirectUri,
                 });
             }}

@@ -25,7 +25,12 @@ type Story = StoryObj<BottomModalProps>;
 
 export const Primary: Story = {
     render: () => (
-        <BottomModal show>
+        <BottomModal
+            show
+            onClose={() => {
+                console.log('close');
+            }}
+        >
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam ipsa perferendis voluptates? Eius vitae
             provident, impedit distinctio cum at pariatur suscipit magni sit numquam dolor velit officia nihil
             voluptatibus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam ipsa perferendis

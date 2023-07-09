@@ -1,21 +1,25 @@
 import { putAgreement } from '@/api/login';
 import { BottomButton } from '@/components/buttons/BottomButton';
-import { userAgreedState } from '@/recoil/user/atom';
+import { userInfoState, userInfoType, userAgreedState } from '@/recoil/user/atom';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Terms from './components/Terms';
 
 const AgreementPage = () => {
     const titleList = ['낫투두클럽', '이용 약관에', '동의해 주세요'];
 
     const [isAllAgreed, setIsAllAgreed] = useState<boolean>(false);
-    const [userAgreed, setUserAgreed] = useRecoilState(userAgreedState);
+    const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+    const userAgreed = useRecoilValue(userAgreedState);
     const navigate = useNavigate();
 
     const onClickNext = () => {
         putAgreement().then(() => {
-            setUserAgreed(true);
+            setUserInfo({
+                ...(userInfo as userInfoType),
+                tosYn: 'Y',
+            });
         });
     };
 
@@ -23,7 +27,7 @@ const AgreementPage = () => {
         if (userAgreed) {
             navigate('/');
         }
-    }, [userAgreed, navigate]);
+    }, [userAgreed]);
 
     return (
         <div>
