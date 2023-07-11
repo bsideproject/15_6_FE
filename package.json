@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite --host --port 3000",
+        "dev": "vite --host --port 8080",
         "build": "tsc && vite build",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
@@ -13,10 +13,13 @@
         "chromatic": "npx chromatic --project-token=chpt_a5e846c7b17e4e3"
     },
     "dependencies": {
+        "axios": "^1.4.0",
         "node-sass": "^8.0.0",
         "react": "^18.2.0",
+        "react-cookie": "^4.1.1",
         "react-dom": "^18.2.0",
         "react-hot-toast": "^2.4.1",
+        "react-notion": "^0.10.0",
         "react-router-dom": "^6.11.2",
         "recoil": "^0.7.7"
     },

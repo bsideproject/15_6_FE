@@ -7,7 +7,7 @@ export type BottomButtonProps = {
 
 export const BottomButton = ({ variant, disabled, clickHandler, children }: BottomButtonProps) => {
     const defaultClassName =
-        'absolute bottom-0 mx-2 my-4 w-[calc(100%-16px)] h-14 rounded-md title2 disabled:bg-gray-300 disabled:text-gray-0 ';
+        'absolute bottom-0 left-0 mx-2 my-4 w-[calc(100%-16px)] h-14 rounded-md title2 disabled:bg-gray-300 disabled:text-gray-0 ';
 
     const variantClass = () => {
         return variant === 'primary'
@@ -16,8 +16,11 @@ export const BottomButton = ({ variant, disabled, clickHandler, children }: Bott
     };
 
     return (
-        <button onClick={clickHandler} disabled={disabled} className={defaultClassName + variantClass()}>
-            {children}
-        </button>
+        <div>
+            <button onClick={clickHandler} disabled={disabled} className={defaultClassName + variantClass()}>
+                {children}
+            </button>
+            <div className="my-4 w-full h-14"></div>
+        </div>
     );
 };

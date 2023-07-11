@@ -99,3 +99,32 @@ export const getWeekOfMonth = (date: Date) => {
 
     return { year, month, week };
 };
+
+export const formatDateToString = (date: string | Date) => {
+    const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+    if (typeof date === 'string') {
+        return date;
+    }
+
+    const newDate = new Date(date);
+    const year = newDate.getFullYear();
+    const month = months[newDate.getMonth()];
+    const day = newDate.getDate();
+    const dayOfWeek = days[newDate.getDay()];
+
+    return `${year}.${month}.${day}(${dayOfWeek})`;
+};
+
+export const diffDay = (startDate: Date, endDate: Date) => {
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    const diffInMilliseconds = Math.abs(end - start);
+    const diffInDays = Math.ceil(diffInMilliseconds / oneDay);
+
+    return diffInDays + 1;
+};

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/card/Card';
 import { FloatingButton } from '@/components/buttons/floating/FloatingButton';
 import { DashedButton } from '@/components/buttons/dashed/DashedButton';
@@ -20,19 +21,20 @@ const fakeData = [
         startDate: new Date('2023-06-25'),
         endDate: new Date('2023-07-15'),
     },
-    // {
-    //     title: 'title2',
-    //     goals: '목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다.',
-    //     startDate: new Date('2023-06-25'),
-    //     endDate: new Date('2023-07-01'),
-    // },
-    // { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    // { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    // { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    // { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
+    {
+        title: 'title2',
+        goals: '목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다.',
+        startDate: new Date('2023-06-25'),
+        endDate: new Date('2023-07-01'),
+    },
+    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
+    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
+    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
+    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
 ];
 
 export default function NotTodoPage() {
+    const router = useNavigate();
     const [isDesc, setIsDesc] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
@@ -83,7 +85,7 @@ export default function NotTodoPage() {
                     <div className="w-[16px] h-[16px] flex justify-center items-center mr-[4px]">
                         <ArrowDown />
                     </div>
-                    <span className="mt-0.5">{isDesc ? '마감 최신순' : '마감 오래된순'}</span>
+                    <span className="mt-0.5 pr-1">{isDesc ? '마감 최신순' : '마감 오래된순'}</span>
                 </div>
             </div>
             {fakeData.map((v) => (
@@ -96,19 +98,18 @@ export default function NotTodoPage() {
                     openMenu={() => setIsMenuOpen(true)}
                 />
             ))}
-            {/* TODO 라우터로 낫투두 생성 페이지 */}
             {fakeData.length < 3 ? (
                 <div className="px-[20px] mt-[24px]">
-                    <DashedButton onClick={() => null}>
+                    <DashedButton onClick={() => router('/nottodo/create')}>
                         <span>+ 낫투두 추가하기</span>
                     </DashedButton>
                 </div>
             ) : (
-                <FloatingButton onClick={() => null} />
+                <FloatingButton onClick={() => router('/nottodo/create')} />
             )}
-            {/* TODO 라우터로 수정 페이지 타게 하고 삭제는 팝업 띄워서 로직 진행 */}
             <BottomPopup isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-                <div className="body1 w-full" onClick={() => null}>
+                {/* TODO 라우터로 수정 페이지 아이디 넣어서 이동 */}
+                <div className="body1 w-full" onClick={() => router('/nottodo/edit')}>
                     낫투두 수정
                 </div>
                 <div className="h-[24px]" />
