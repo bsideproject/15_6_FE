@@ -1,28 +1,49 @@
+import { useRef, useState } from 'react';
 import { ReactComponent as Delete } from '@/assets/img/icn_delete.svg';
 
 export interface InputProps {
     value: string | number;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
-    onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
+    type: 'text' | 'textarea';
+    setValue: React.Dispatch<React.SetStateAction<any>>;
+    onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
+    onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
+    textRef?: React.LegacyRef<HTMLInputElement> | undefined;
     label?: string;
     placeHolder?: string;
     helperText?: string;
     isWarning?: boolean;
     disabled?: boolean;
     icon?: string | React.ReactNode;
+    isInputModeNone?: boolean;
 }
 export const Input = (props: InputProps) => {
-    const { value, setValue, onChange, label, placeHolder, helperText, isWarning, disabled, icon } = props;
+    const {
+        value,
+        setValue,
+        onChange,
+        label,
+        placeHolder,
+        helperText,
+        isWarning,
+        disabled,
+        icon,
+        onFocus,
+        isInputModeNone,
+        type,
+        textRef,
+    } = props;
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [isWrapperFocus, setIsWrapperFocus] = useState<boolean>(false);
 
     //TODO size 추가
     const wrapperSizeClass = () => {
-        return 'w-[320px]';
+        return 'w-full h-auto';
     };
     const sizeClass = () => {
-        return 'w-[320px] h-[48px]';
+        return type === 'text' ? 'w-full h-[48px]' : 'w-full h-auto';
     };
     const borderColorClass = () => {
-        return isWarning ? 'border-negative' : 'border-gray-300';
+        return isWarning ? 'border-negative' : isWrapperFocus ? 'border-gray-900' : 'border-gray-300';
     };
     const disabledClass = () => {
         return disabled ? 'text-gray-500 bg-gray-100' : '';
@@ -38,22 +59,58 @@ export const Input = (props: InputProps) => {
         }
     };
 
+    const handleResizeHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (onChange) {
+            onChange(e);
+        }
+        if (textareaRef && textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+        }
+    };
+
+    const handleDelete = () => {
+        setValue('');
+        if (type === 'textarea' && textareaRef && textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
+    };
+
     return (
         <div className={`wrapper inline-flex flex-col ${wrapperSizeClass()}`}>
             {label ? <div className="mb-1 title3 text-gray-600">{label}</div> : null}
             <div
-                className={`input-wrapper flex justify-center items-center rounded-lg border px-[16px] py-[12px] ${sizeClass()} ${borderColorClass()} ${disabledClass()}`}
+                className={`input-wrapper box-border flex justify-center items-center rounded-lg border px-[16px] py-[12px] ${sizeClass()} ${borderColorClass()} ${disabledClass()}`}
+                onFocus={() => setIsWrapperFocus(true)}
+                onBlur={() => setIsWrapperFocus(false)}
             >
-                <input
-                    type="text"
-                    value={value}
-                    onChange={onChange}
-                    disabled={disabled}
-                    placeholder={placeHolder}
-                    className="w-full h-full outline-none body1"
-                />
-                {value.toString().length > 0 ? (
-                    <div onClick={() => setValue('')}>
+                {type === 'text' ? (
+                    <input
+                        ref={textRef}
+                        value={value}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        disabled={disabled}
+                        placeholder={placeHolder}
+                        className="w-full outline-none body1"
+                        inputMode={isInputModeNone ? 'none' : 'text'}
+                    />
+                ) : (
+                    <textarea
+                        ref={textareaRef}
+                        value={value}
+                        onChange={handleResizeHeight}
+                        onFocus={onFocus}
+                        disabled={disabled}
+                        placeholder={placeHolder}
+                        className="w-full outline-none body1 resize-none"
+                        rows={1}
+                        maxLength={100}
+                        inputMode={isInputModeNone ? 'none' : 'text'}
+                    />
+                )}
+                {value && value.toString().length > 0 ? (
+                    <div onClick={() => handleDelete()}>
                         <Delete />
                     </div>
                 ) : null}

@@ -1,7 +1,8 @@
 import { ReactComponent as CheckOff } from '@/assets/img/icn_check_off.svg';
 import { ReactComponent as CheckOn } from '@/assets/img/icn_check_on.svg';
-import { useEffectAfterMount } from '@/hooks/useEffectAfterMount';
+import { BottomModal } from '@/components/modal/BottomModal';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { NotionRenderer } from 'react-notion';
 
 type TermsContextType = {
     terms: Term[];
@@ -30,6 +31,7 @@ const Terms = ({ children, onAllCheck }: TermsProps) => {
     const [isAllChecked, setIsAllChecked] = useState(false);
 
     const addTerm = (term: Term) => {
+        console.log('add', term);
         setTerms((terms) => [...terms, term]);
     };
 
@@ -90,21 +92,29 @@ type TermsItemProps = {
     id: string;
     bold?: boolean;
     required?: boolean;
-    termsUrl: string;
+    notionId: string;
 };
 
-const TermsItem = ({ title, id, required = false }: TermsItemProps) => {
+const TermsItem = ({ title, id, required = false, notionId }: TermsItemProps) => {
     const { addTerm, checkTerm, terms } = useContext(TermsContext) as TermsContextType;
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [notionData, setNotionData] = useState(null);
 
     const checked = terms.find((term) => term.id === id)?.checked || false;
 
-    useEffectAfterMount(() => {
+    useEffect(() => {
         addTerm({
             title,
             checked: false,
             required,
             id,
         });
+    }, []);
+
+    useEffect(() => {
+        fetch(`https://notion-api.splitbee.io/v1/page/${notionId}`)
+            .then((res) => res.json())
+            .then((data) => setNotionData(data));
     }, []);
 
     return (
@@ -114,7 +124,12 @@ const TermsItem = ({ title, id, required = false }: TermsItemProps) => {
                     <span className="text-base leading-6 font-normal text-gray-700">{title}</span>
                 </div>
             </BaseTermItem>
-            <button className="mr-5 underline">보기</button>
+            <button className="mr-5 underline" onClick={() => setShowModal(true)}>
+                보기
+            </button>
+            <BottomModal show={showModal} onClose={() => setShowModal(false)}>
+                {notionData && <NotionRenderer blockMap={notionData} />}
+            </BottomModal>
         </div>
     );
 };
