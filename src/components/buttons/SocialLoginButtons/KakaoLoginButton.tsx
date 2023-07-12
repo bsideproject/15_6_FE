@@ -3,7 +3,7 @@ import { ReactComponent as KakaoIcon } from '@/assets/img/icn_kakao.svg';
 
 const KakaoLoginButton = () => {
     const redirectUri = import.meta.env.PROD
-        ? 'https://nottodoclub.store/login/kakao'
+        ? 'https://www.nottodoclub.store/login/kakao'
         : 'http://localhost:8080/login/kakao';
 
     return (
