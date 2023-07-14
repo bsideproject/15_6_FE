@@ -11,6 +11,7 @@ import ProfilePage from '@/pages/profile';
 import AgreementPage from '@/pages/agreement';
 import LoginRedirect from '@/pages/login/LoginRedirect';
 import DefaultLayout from './components/layout/DefaultLayout';
+import BadgeDetail from './pages/badge/detail';
 
 export const router = createBrowserRouter([
     {
@@ -45,7 +46,25 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'badge',
-                element: <BadgePage />,
+                children: [
+                    {
+                        path: '',
+                        element: <BadgePage />,
+                    },
+                    {
+                        path: ':badgeId',
+                        element: <BadgeDetail />,
+                        loader: ({ params }) => {
+                            return {
+                                key: params.badgeId,
+                                name: '뱃지명',
+                                description: '뱃지 설명',
+                                count: 3,
+                                acquiredAt: ['2023.07.14', '2023.07.15'],
+                            };
+                        },
+                    },
+                ],
             },
             {
                 path: 'profile',
