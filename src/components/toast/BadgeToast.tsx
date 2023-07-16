@@ -1,15 +1,15 @@
-import badgeIcon from '@/assets/img/badge_toast_example.png';
+import toast from 'react-hot-toast';
 
 export type BadgeToastProps = {
-    visible: boolean;
     badgeName: string;
+    badgeIcon: string;
 };
 
-const BadgeToast = ({ visible, badgeName }: BadgeToastProps) => {
-    return (
+export const BadgeToast = ({ badgeName, badgeIcon }: BadgeToastProps) => {
+    toast.custom((t) => (
         <div
             className={`${
-                visible ? 'animate-enter' : 'animate-leave'
+                t.visible ? 'animate-enter' : 'animate-leave'
             } flex items-center justify-center bg-gray-900 w-auto px-4 py-2 bottom-[116px] rounded-xl text-white text-xs`}
         >
             <img className="w-[34px] h-[34px] mr-2 my-1" src={badgeIcon} />
@@ -21,7 +21,5 @@ const BadgeToast = ({ visible, badgeName }: BadgeToastProps) => {
                 <div>획득한 뱃지를 확인해보세요.</div>
             </div>
         </div>
-    );
+    ));
 };
-
-export default BadgeToast;

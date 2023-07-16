@@ -1,5 +1,4 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 
 //pages
 import HomePage from '@/pages/home';
@@ -18,7 +17,6 @@ export const router = createBrowserRouter([
         element: (
             <DefaultLayout>
                 <Outlet />
-                <Toaster position="bottom-center" containerStyle={{ bottom: 56 + 12 }} />
             </DefaultLayout>
         ),
         children: [
