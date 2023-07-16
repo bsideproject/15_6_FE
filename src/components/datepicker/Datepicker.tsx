@@ -191,7 +191,7 @@ export const DatePicker = (props: DatePickerProps) => {
                     ))}
                 </div>
             </div>
-            <div className="body w-full">{renderDay()}</div>
+            <div className="title2 w-full">{renderDay()}</div>
         </div>
     );
 };
