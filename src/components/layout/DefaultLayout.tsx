@@ -53,6 +53,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
                     setUserInfo({
                         email: data.email,
                         nickName: data.nickname,
+                        profileImgUrl: data.profileImgUrl,
                         tosYn: data.tosYn,
                     });
                 })

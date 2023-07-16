@@ -3,6 +3,7 @@ import { atom, selector } from 'recoil';
 export type userInfoType = {
     nickName: string;
     email: string;
+    profileImgUrl: string;
     tosYn: 'Y' | 'N';
 };
 
