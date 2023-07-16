@@ -9,6 +9,7 @@ import NotTodoCreatePage from './pages/nottodo/NotTodoCreatePage';
 import BadgePage from '@/pages/badge';
 import ProfilePage from '@/pages/profile';
 import ProfileEditPage from '@/pages/profile/ProfileEditPage';
+import AlarmPage from '@/pages/profile/AlarmPage';
 import ContactPage from '@/pages/profile/ContactPage';
 import TermsPage from '@/pages/profile/TermsPage';
 import NoticePage from '@/pages/profile/NoticePage';
@@ -79,23 +80,27 @@ export const router = createBrowserRouter([
                         element: <ProfilePage />,
                     },
                     {
-                        path: '/edit',
+                        path: 'edit',
                         element: <ProfileEditPage />,
                     },
                     {
-                        path: '/contact',
+                        path: 'alarm',
+                        element: <AlarmPage />,
+                    },
+                    {
+                        path: 'contact',
                         element: <ContactPage />,
                     },
                     {
-                        path: '/notice',
+                        path: 'notice',
                         element: <NoticePage />,
                     },
                     {
-                        path: '/terms',
+                        path: 'terms',
                         element: <TermsPage />,
                     },
                     {
-                        path: '/policy',
+                        path: 'policy',
                         element: <PolicyPage />,
                     },
                 ],
