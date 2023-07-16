@@ -23,6 +23,7 @@ export default function ProfileEditPage() {
     const userInfo = useRecoilValue(userInfoState);
     const [userName, setUserName] = useState<string>('');
     const [userEmail, setUserEmail] = useState<string>('');
+    const [userImage, setUserImage] = useState<string>('');
     const [isAutoLogin, setIsAutoLogin] = useState<boolean>(false);
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
 
@@ -30,6 +31,7 @@ export default function ProfileEditPage() {
         if (userInfo) {
             setUserName(userInfo.nickName);
             setUserEmail(userInfo.email);
+            setUserImage(userInfo.profileImgUrl);
         }
     }, [userInfo]);
 
@@ -61,7 +63,7 @@ export default function ProfileEditPage() {
             <div className="w-full flex flex-col items-center">
                 <div className="h-[60px]"></div>
                 {/* TODO 자신의 이미지로 변경 */}
-                <Avatar size="lg" src={<DefaultProfile />} />
+                <Avatar size="lg" src={userImage ? userImage : <DefaultProfile />} />
                 <div className="h-[40px]"></div>
                 <div className="w-full flex items-end gap-2">
                     <div className="w-[232px]">

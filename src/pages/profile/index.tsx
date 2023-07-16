@@ -55,7 +55,7 @@ export default function ProfilePage() {
         <div className="px-5 pt-[60px]">
             <div className="w-full flex flex-col items-center">
                 {/* TODO 이미지 변경 */}
-                <Avatar size="md" src={<DefaultProfile />} />
+                <Avatar size="md" src={userInfo?.profileImgUrl ? userInfo.profileImgUrl : <DefaultProfile />} />
                 <div className="h-3"></div>
                 <div className="text-center title1">{userInfo ? userInfo.nickName : 'unknown'}님</div>
                 <div className="flex items-center gap-1">
