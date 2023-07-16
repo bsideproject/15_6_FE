@@ -19,7 +19,7 @@ import { ReactComponent as Logout } from '@/assets/img/icn_logout.svg';
 import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
 
 export default function ProfilePage() {
-    // const { logOut, withdraw } = useLogIn();
+    const { logOut } = useLogIn();
     const router = useNavigate();
     const userInfo = useRecoilValue(userInfoState);
     const menuTitleList = ['알림 설정', '공지사항', '개인정보 처리방침', '서비스 이용약관', '문의 / 건의하기'];
@@ -36,7 +36,11 @@ export default function ProfilePage() {
             router(menuRouterList[idx]);
         };
         return (
-            <div className="flex w-full h-14 items-center gap-3" onClick={() => handleRouter(index)}>
+            <div
+                key={'menu' + index}
+                className="flex w-full h-14 items-center gap-3"
+                onClick={() => handleRouter(index)}
+            >
                 {svg}
                 <span className="body1 text-gray-900">{title}</span>
                 {isArrow ? <MenuArrow className="ml-auto" /> : null}
@@ -44,7 +48,7 @@ export default function ProfilePage() {
         );
     };
     const handleLogout = () => {
-        // TODO logout api 실행
+        logOut();
     };
 
     return (
@@ -53,10 +57,10 @@ export default function ProfilePage() {
                 {/* TODO 이미지 변경 */}
                 <Avatar size="md" src={<DefaultProfile />} />
                 <div className="h-3"></div>
-                <div className="text-center title1">{'닉네임'}님</div>
+                <div className="text-center title1">{userInfo ? userInfo.nickName : 'unknown'}님</div>
                 <div className="flex items-center gap-1">
-                    <div className="text-center text-gray-500 body2">nottodoclub@gmail.com</div>
-                    <Google className="w-3 h-3" />
+                    <div className="text-center text-gray-500 body2">{userInfo?.email}</div>
+                    <Kakao className="w-3 h-3" />
                 </div>
                 <div className="h-4"></div>
                 <div

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLogIn } from '@/hooks/useLogin';
 
 import { Avatar } from '@/components/avatar/Avatar';
 import { Input } from '@/components/common/input/Input';
@@ -7,18 +8,30 @@ import { ToggleButton } from '@/components/buttons/toggle/ToggleButton';
 import { Toast } from '@/components/toast/Toast';
 import { ConfirmPopup } from '@/components/popup/PopupGroup';
 
-import { ReactComponent as Google } from '@/assets/img/icn_google.svg';
+// import { ReactComponent as Google } from '@/assets/img/icn_google.svg';
 import { ReactComponent as Kakao } from '@/assets/img/icn_kakao.svg';
-import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
+// import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
 import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
+import { useRecoilValue } from 'recoil';
+import { userInfoState } from '@/recoil/user/atom';
+import { getUserInfo } from '@/api/login';
 
 export default function ProfileEditPage() {
+    const { withdraw } = useLogIn();
     const router = useNavigate();
     // TODO user 정보 세팅
+    const userInfo = useRecoilValue(userInfoState);
     const [userName, setUserName] = useState<string>('');
     const [userEmail, setUserEmail] = useState<string>('');
     const [isAutoLogin, setIsAutoLogin] = useState<boolean>(false);
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserName(userInfo.nickName);
+            setUserEmail(userInfo.email);
+        }
+    }, [userInfo]);
 
     const handleAutoLogin = () => {
         setIsAutoLogin(!isAutoLogin);
@@ -36,8 +49,9 @@ export default function ProfileEditPage() {
 
     const handleDeleteAccount = () => {
         // TODO 탈퇴 버튼 클릭 시 실행할 로직
+        withdraw();
         // 로그아웃하고 회원 탈퇴 api 실행하고 성공하면 로그인 페이지로 리디렉션 및 토스트 알림
-        router('/login');
+        // router('/login');
         Toast('탈퇴가 완료되었습니다.');
         // 실패 시 실패했다는 토스트 알림
     };
@@ -80,7 +94,7 @@ export default function ProfileEditPage() {
                         setValue={setUserEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
                         // TODO 가입한 소셜에 따라서 아이콘 변경
-                        icon={<Google />}
+                        icon={<Kakao />}
                     />
                 </div>
                 <div className="h-2"></div>
