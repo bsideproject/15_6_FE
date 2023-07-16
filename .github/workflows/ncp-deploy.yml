@@ -12,6 +12,19 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
+            - name: Generate Environment Variables File for Production
+              run: |
+                  echo "VITE_EMAIL_SERVICE_ID=$VITE_EMAIL_SERVICE_ID" >> .env.production
+                  echo "VITE_EMAIL_TEMPLATE_ID=$VITE_EMAIL_TEMPLATE_ID" >> .env.production
+                  echo "VITE_EMAIL_PUBLIC_KEY=$VITE_EMAIL_PUBLIC_KEY" >> .env.production
+                  echo "VITE_TERMS_NOTION=$VITE_TERMS_NOTION" >> .env.production
+                  echo "VITE_POLICY_NOTION=$VITE_POLICY_NOTION" >> .env.production
+              env:
+                  VITE_EMAIL_SERVICE_ID: ${{ secrets.VITE_EMAIL_SERVICE_ID }}
+                  VITE_EMAIL_TEMPLATE_ID: ${{ secrets.VITE_EMAIL_TEMPLATE_ID }}
+                  VITE_EMAIL_PUBLIC_KEY: ${{ secrets.VITE_EMAIL_PUBLIC_KEY }}
+                  VITE_TERMS_NOTION: ${{ secrets.VITE_TERMS_NOTION }}
+                  VITE_POLICY_NOTION: ${{ secrets.VITE_POLICY_NOTION }}
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v2
             - name: Login to NCP Container Registry
