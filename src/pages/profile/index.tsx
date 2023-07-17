@@ -5,13 +5,13 @@ import { useLogIn } from '@/hooks/useLogin';
 import { userInfoState } from '@/recoil/user/atom';
 import { useRecoilValue } from 'recoil';
 
-import { ReactComponent as Google } from '@/assets/img/icn_google.svg';
+// import { ReactComponent as Google } from '@/assets/img/icn_google.svg';
 import { ReactComponent as Kakao } from '@/assets/img/icn_kakao.svg';
-import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
+// import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
 import { ReactComponent as Arrow } from '@/assets/img/icn_arrow_right_s.svg';
 import { ReactComponent as MenuArrow } from '@/assets/img/icn_menu_arrow.svg';
 import { ReactComponent as Notice } from '@/assets/img/icn_notice.svg';
-import { ReactComponent as Megaphone } from '@/assets/img/icn_megaphone.svg';
+// import { ReactComponent as Megaphone } from '@/assets/img/icn_megaphone.svg';
 import { ReactComponent as Keyhole } from '@/assets/img/icn_keyhole.svg';
 import { ReactComponent as Textfile } from '@/assets/img/icn_textfile.svg';
 import { ReactComponent as Message } from '@/assets/img/icn_message.svg';
@@ -22,11 +22,11 @@ export default function ProfilePage() {
     const { logOut } = useLogIn();
     const router = useNavigate();
     const userInfo = useRecoilValue(userInfoState);
-    const menuTitleList = ['알림 설정', '공지사항', '개인정보 처리방침', '서비스 이용약관', '문의 / 건의하기'];
-    const menuIconList = [<Notice />, <Megaphone />, <Keyhole />, <Textfile />, <Message />];
+    const menuTitleList = ['알림 설정', /*'공지사항',*/ '개인정보 처리방침', '서비스 이용약관', '문의 / 건의하기'];
+    const menuIconList = [<Notice />, /*<Megaphone />,*/ <Keyhole />, <Textfile />, <Message />];
     const menuRouterList = [
         '/profile/alarm',
-        '/profile/notice',
+        // '/profile/notice',
         '/profile/policy',
         '/profile/terms',
         '/profile/contact',
@@ -60,6 +60,7 @@ export default function ProfilePage() {
                 <div className="text-center title1">{userInfo ? userInfo.nickName : 'unknown'}님</div>
                 <div className="flex items-center gap-1">
                     <div className="text-center text-gray-500 body2">{userInfo?.email}</div>
+                    {/* TODO 접속 소셜에 따라 변경 */}
                     <Kakao className="w-3 h-3" />
                 </div>
                 <div className="h-4"></div>
