@@ -10,8 +10,8 @@ interface ScrollablePicker {
 }
 
 export const ScrollablePicker = (props: ScrollablePicker) => {
-    const { time, setTime } = props;
-    const [position, setPosition] = useState(0);
+    const { setTime } = props;
+    const [_, setPosition] = useState(0);
     const [currentHourIndex, setCurrentHourIndex] = useState<number>(0);
     const [currentMinIndex, setCurrentMinIndex] = useState<number>(0);
     const [currentApmIndex, setCurrentApmIndex] = useState<number>(0);

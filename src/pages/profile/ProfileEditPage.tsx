@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useLogIn } from '@/hooks/useLogin';
 
 import { Avatar } from '@/components/avatar/Avatar';
@@ -14,11 +13,9 @@ import { ReactComponent as Kakao } from '@/assets/img/icn_kakao.svg';
 import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
 import { useRecoilValue } from 'recoil';
 import { userInfoState } from '@/recoil/user/atom';
-import { getUserInfo } from '@/api/login';
 
 export default function ProfileEditPage() {
     const { withdraw } = useLogIn();
-    const router = useNavigate();
     // TODO user 정보 세팅
     const userInfo = useRecoilValue(userInfoState);
     const [userName, setUserName] = useState<string>('');

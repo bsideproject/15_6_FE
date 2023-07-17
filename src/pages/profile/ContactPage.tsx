@@ -65,7 +65,7 @@ export default function ContactPage() {
             const templateId = import.meta.env.VITE_EMAIL_TEMPLATE_ID;
             const publicKey = import.meta.env.VITE_EMAIL_PUBLIC_KEY;
             emailjs.sendForm(serviceId, templateId, formRef.current, publicKey).then(
-                (result) => {
+                () => {
                     router(-1);
                     Toast('✅ 제출이 완료되었습니다. 소중한 의견 감사합니다.');
                 },
