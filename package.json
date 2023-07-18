@@ -13,6 +13,7 @@
         "chromatic": "npx chromatic --project-token=chpt_a5e846c7b17e4e3"
     },
     "dependencies": {
+        "@emailjs/browser": "^3.11.0",
         "axios": "^1.4.0",
         "node-sass": "^8.0.0",
         "react": "^18.2.0",

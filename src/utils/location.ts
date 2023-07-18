@@ -19,7 +19,7 @@ export const useIsClose = () => {
 
 export const useHasHeader = () => {
     const location = useLocation();
-    return !headerHiddenPaths.some((path) => location.pathname.includes(path));
+    return !headerHiddenPaths.some((path) => location.pathname === path);
 };
 
 export const useHasBottomNavBar = () => {

@@ -2,12 +2,13 @@ import { useRef, useState } from 'react';
 import { ReactComponent as Delete } from '@/assets/img/icn_delete.svg';
 
 export interface InputProps {
-    value: string | number;
+    value: string | number | undefined;
     type: 'text' | 'textarea';
     setValue: React.Dispatch<React.SetStateAction<any>>;
     onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
     onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
     textRef?: React.LegacyRef<HTMLInputElement> | undefined;
+    name?: string;
     label?: string;
     placeHolder?: string;
     helperText?: string;
@@ -15,6 +16,8 @@ export interface InputProps {
     disabled?: boolean;
     icon?: string | React.ReactNode;
     isInputModeNone?: boolean;
+    rows?: number;
+    maxLength?: number;
 }
 export const Input = (props: InputProps) => {
     const {
@@ -31,6 +34,9 @@ export const Input = (props: InputProps) => {
         isInputModeNone,
         type,
         textRef,
+        rows,
+        maxLength,
+        name,
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isWrapperFocus, setIsWrapperFocus] = useState<boolean>(false);
@@ -92,6 +98,7 @@ export const Input = (props: InputProps) => {
                         onFocus={onFocus}
                         disabled={disabled}
                         placeholder={placeHolder}
+                        name={name}
                         className="w-full outline-none body1"
                         inputMode={isInputModeNone ? 'none' : 'text'}
                     />
@@ -103,14 +110,15 @@ export const Input = (props: InputProps) => {
                         onFocus={onFocus}
                         disabled={disabled}
                         placeholder={placeHolder}
+                        name={name}
                         className="w-full outline-none body1 resize-none"
-                        rows={1}
-                        maxLength={100}
+                        rows={rows}
+                        maxLength={maxLength}
                         inputMode={isInputModeNone ? 'none' : 'text'}
                     />
                 )}
-                {value && value.toString().length > 0 ? (
-                    <div onClick={() => handleDelete()}>
+                {value && value.toString().length > 0 && !disabled ? (
+                    <div onClick={handleDelete}>
                         <Delete />
                     </div>
                 ) : null}

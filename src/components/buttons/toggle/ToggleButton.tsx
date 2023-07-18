@@ -23,7 +23,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     return (
         <div
             className={`wrapper rounded-full px-0.5 inline-flex items-center ${
-                isToggle ? 'bg-primary' : 'bg-black'
+                isToggle ? 'bg-primary' : 'bg-gray-300'
             } ${sizeClass(size)}`}
             onClick={onClick}
         >

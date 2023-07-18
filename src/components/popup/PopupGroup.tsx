@@ -5,6 +5,7 @@ export interface BasePopupProps {
     message: React.ReactNode;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     onClick?: React.MouseEventHandler<HTMLDivElement | HTMLButtonElement> | undefined;
+    confrimString?: string;
 }
 
 export interface TitlePopupProps extends BasePopupProps {
@@ -12,7 +13,7 @@ export interface TitlePopupProps extends BasePopupProps {
 }
 
 export const ConfirmPopup = (props: BasePopupProps) => {
-    const { isOpen, setIsOpen, onClick, message } = props;
+    const { isOpen, setIsOpen, onClick, message, confrimString } = props;
 
     const handleClose = () => {
         setIsOpen(false);
@@ -31,7 +32,7 @@ export const ConfirmPopup = (props: BasePopupProps) => {
                     취소
                 </button>
                 <button className="w-full title2 text-negative" onClick={handleOnClick}>
-                    확인
+                    {confrimString ?? '확인'}
                 </button>
             </Popup.Footer>
         </Popup>
@@ -39,7 +40,7 @@ export const ConfirmPopup = (props: BasePopupProps) => {
 };
 
 export const AlertPopup = (props: BasePopupProps) => {
-    const { isOpen, setIsOpen, message } = props;
+    const { isOpen, setIsOpen, message, confrimString } = props;
 
     const handleClose = () => {
         setIsOpen(false);
@@ -50,7 +51,7 @@ export const AlertPopup = (props: BasePopupProps) => {
             <Popup.Body>{message}</Popup.Body>
             <Popup.Footer>
                 <button className="w-full title2 text-negative" onClick={handleClose}>
-                    확인
+                    {confrimString ?? '확인'}
                 </button>
             </Popup.Footer>
         </Popup>
@@ -58,7 +59,7 @@ export const AlertPopup = (props: BasePopupProps) => {
 };
 
 export const DeleteTitlePopup = (props: TitlePopupProps) => {
-    const { isOpen, setIsOpen, message, title, onClick } = props;
+    const { isOpen, setIsOpen, message, title, onClick, confrimString } = props;
 
     const handleClose = () => {
         setIsOpen(false);
@@ -78,7 +79,7 @@ export const DeleteTitlePopup = (props: TitlePopupProps) => {
                     취소
                 </button>
                 <button className="w-full title2 text-negative" onClick={handleOnClick}>
-                    삭제하기
+                    {confrimString ?? '삭제하기'}
                 </button>
             </Popup.Footer>
         </Popup>

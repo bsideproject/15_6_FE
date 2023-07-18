@@ -278,6 +278,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 1"
                         onChange={(e) => setMessage1(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                     <Input
                         type="textarea"
@@ -286,6 +288,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 2"
                         onChange={(e) => setMessage2(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                     <Input
                         type="textarea"
@@ -294,6 +298,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 3"
                         onChange={(e) => setMessage3(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                 </div>
                 <div className="w-full mb-24"></div>

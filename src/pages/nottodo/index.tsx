@@ -88,8 +88,9 @@ export default function NotTodoPage() {
                     <span className="mt-0.5 pr-1">{isDesc ? '마감 최신순' : '마감 오래된순'}</span>
                 </div>
             </div>
-            {fakeData.map((v) => (
+            {fakeData.map((v, index) => (
                 <Card
+                    key={'card' + index}
                     className="mb-[8px]"
                     title={v.title}
                     startDate={v.startDate}
