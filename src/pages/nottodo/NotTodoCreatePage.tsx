@@ -247,10 +247,22 @@ export default function NotTodoCreatePage() {
                     <span>권장 기간은 30일 이에요!</span>
                 </div>
                 <div className={`w-full bg-white pt-2 mb-24 ${isStartOpen ? 'block' : 'hidden'}`}>
-                    <DatePicker selected={startDate} startDate={startDate} endDate={endDate} onChange={setStartDate} />
+                    <DatePicker
+                        selected={startDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={setStartDate}
+                        isModal
+                    />
                 </div>
                 <div className={`w-full bg-white pt-2 mb-24 ${isEndOpen ? 'block' : 'hidden'}`}>
-                    <DatePicker selected={endDate} startDate={startDate} endDate={endDate} onChange={setEndDate} />
+                    <DatePicker
+                        selected={endDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={setEndDate}
+                        isModal
+                    />
                 </div>
             </div>
 
