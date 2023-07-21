@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ToggleButton, ToggleButtonProps } from './ToggleButton';
+import { TextToggleButton } from './TextToggleButton';
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
     title: 'NotToDo/Components/ToggleButton',
@@ -60,4 +61,12 @@ export const Size = () => {
             <ToggleButton size="lg" isToggle={isToggle} onClick={handleToggle} />
         </div>
     );
+};
+
+export const TextToggle = () => {
+    const [isToggle, setIsToggle] = useState<boolean>(false);
+    const handleToggle = () => {
+        setIsToggle(!isToggle);
+    };
+    return <TextToggleButton isToggle={isToggle} onClick={handleToggle} activeMsg="월간" inactiveMsg="주간" />;
 };
