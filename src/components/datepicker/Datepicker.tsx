@@ -16,11 +16,13 @@ export interface DatePickerProps {
     startDate?: Date;
     endDate?: Date;
     isModal: boolean;
+    isWeekMode: boolean;
     markerDateObj?: MarkerDate;
+    todayAfterDisabled?: boolean;
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-    const { selected, onChange, startDate, endDate, isModal, markerDateObj } = props;
+    const { selected, onChange, startDate, endDate, isModal, markerDateObj, isWeekMode, todayAfterDisabled } = props;
 
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -29,7 +31,7 @@ export const DatePicker = (props: DatePickerProps) => {
     const [currentWeek, setCurrentWeek] = useState<number>(1);
     const [today] = useState<Date>(new Date());
     const [dayList, setDayList] = useState<DateObj[]>([]);
-    const [isWeek, setIsWeek] = useState<boolean>(false);
+    const [isWeek, setIsWeek] = useState<boolean>(isWeekMode);
     const [arrowState, setArrowState] = useState<'left' | 'right' | null>(null);
 
     useEffect(() => {
@@ -134,6 +136,13 @@ export const DatePicker = (props: DatePickerProps) => {
             const markerDate = date.year + '-' + date.month + '-' + date.day;
             let disabled = false;
 
+            if (todayAfterDisabled) {
+                const disableDate = new Date(date.year, date.month - 1, date.day);
+                if (disableDate > today) {
+                    disabled = true;
+                }
+            }
+
             if (isModal) {
                 // 오늘 이전의 날은 전부 disable처리
                 if (newDate < today) {
@@ -157,7 +166,7 @@ export const DatePicker = (props: DatePickerProps) => {
             return (
                 <div
                     key={index}
-                    className={`w-[calc((100%/7))] 
+                    className={`w-[calc((100%/7))]
                     h-11 py-[2.5px] rounded-full inline-flex text-lg font-bold ${
                         isEqualDate(today, date) ? (isEqualDate(selected, date) ? 'text-black' : 'text-primary') : ''
                     }`}
@@ -235,4 +244,5 @@ export const DatePicker = (props: DatePickerProps) => {
 
 DatePicker.defaultProps = {
     isModal: false,
+    isWeekMode: false,
 };
