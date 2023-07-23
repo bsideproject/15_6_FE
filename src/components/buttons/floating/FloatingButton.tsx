@@ -10,7 +10,7 @@ export const FloatingButton = (props: FloatingButtonProps) => {
             className={`${className} floating fixed right-[20px] bottom-[76px] w-[52px] h-[52px] flex justify-center items-center rounded-full bg-black`}
             onClick={onClick}
         >
-            <Plus />
+            <Plus fill="white" />
         </div>
     );
 };

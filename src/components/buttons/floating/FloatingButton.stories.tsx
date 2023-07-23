@@ -57,7 +57,7 @@ export const MenuFloatingButton: Story = (args: any) => {
                         } w-full h-full flex justify-center items-center rounded-full`}
                         onClick={handleOpen}
                     >
-                        <Plus className={`${isOpen ? 'rotate-45' : 'rotate-0'} transition-all`} />
+                        <Plus className={`${isOpen ? 'rotate-45' : 'rotate-0'} transition-all`} fill="white" />
                     </div>
                 </FloatingMenuButton.Trigger>
                 <FloatingMenuButton.Menu>
@@ -66,7 +66,7 @@ export const MenuFloatingButton: Story = (args: any) => {
                             성공 기록
                         </span>
                         <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-postive cursor-pointer">
-                            <Good />
+                            <Good fill="white" />
                         </div>
                     </div>
                     <div className="flex w-full h-full relative" onClick={handleClick}>
@@ -74,7 +74,7 @@ export const MenuFloatingButton: Story = (args: any) => {
                             실패 기록
                         </span>
                         <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-negative cursor-pointer">
-                            <Bad />
+                            <Bad fill="white" />
                         </div>
                     </div>
                 </FloatingMenuButton.Menu>
