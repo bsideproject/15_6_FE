@@ -49,7 +49,7 @@ export const MenuFloatingButton: Story = (args: any) => {
     };
     return (
         <div className="w-[360px] h-[640px] relative border">
-            <FloatingMenuButton className="absolute" isOpen={isOpen} setIsOpen={setIsOpen}>
+            <FloatingMenuButton {...args} className="absolute" isOpen={isOpen} setIsOpen={setIsOpen}>
                 <FloatingMenuButton.Trigger className="w-[52px] h-[52px]">
                     <div
                         className={`${

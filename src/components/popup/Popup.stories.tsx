@@ -7,7 +7,6 @@ import { BottomPopup as BPopup } from './BottomPopup';
 import { Input } from '@/components/common/input/Input';
 import { ReactComponent as Plus } from '@/assets/img/icn_plus.svg';
 import { ReactComponent as Good } from '@/assets/img/icn_thumb_up.svg';
-import { ReactComponent as Bad } from '@/assets/img/icn_thumb_down.svg';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
