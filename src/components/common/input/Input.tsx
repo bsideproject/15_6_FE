@@ -18,6 +18,7 @@ export interface InputProps {
     isInputModeNone?: boolean;
     rows?: number;
     maxLength?: number;
+    isScroll?: boolean;
 }
 export const Input = (props: InputProps) => {
     const {
@@ -37,6 +38,7 @@ export const Input = (props: InputProps) => {
         rows,
         maxLength,
         name,
+        isScroll,
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isWrapperFocus, setIsWrapperFocus] = useState<boolean>(false);
@@ -106,7 +108,7 @@ export const Input = (props: InputProps) => {
                     <textarea
                         ref={textareaRef}
                         value={value}
-                        onChange={handleResizeHeight}
+                        onChange={isScroll ? onChange : handleResizeHeight}
                         onFocus={onFocus}
                         disabled={disabled}
                         placeholder={placeHolder}

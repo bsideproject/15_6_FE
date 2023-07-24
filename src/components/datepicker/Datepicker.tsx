@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
-import { getMonthDayList, getWeekOfMonth, getWeekDayList } from '@/utils/datepicker';
+import { getMonthDayList, getWeekOfMonth, getWeekDayList, DateObj } from '@/utils/datepicker';
 import { ReactComponent as Arrow } from '@/assets/img/icn_arrow.svg';
 import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg';
+import { TextToggleButton } from '@/components/buttons/toggle/TextToggleButton';
+
+type NottodoStatus = 'success' | 'fail' | 'warning';
+
+interface MarkerDate {
+    [date: string]: NottodoStatus;
+}
 
 export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
     startDate?: Date;
     endDate?: Date;
+    isModal: boolean;
+    isWeekMode: boolean;
+    markerDateObj?: MarkerDate;
+    todayAfterDisabled?: boolean;
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-    const { selected, onChange, startDate, endDate } = props;
+    const { selected, onChange, startDate, endDate, isModal, markerDateObj, isWeekMode, todayAfterDisabled } = props;
 
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -19,8 +30,8 @@ export const DatePicker = (props: DatePickerProps) => {
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
     const [currentWeek, setCurrentWeek] = useState<number>(1);
     const [today] = useState<Date>(new Date());
-    const [dayList, setDayList] = useState<string[]>([]);
-    const [isWeek] = useState<boolean>(false);
+    const [dayList, setDayList] = useState<DateObj[]>([]);
+    const [isWeek, setIsWeek] = useState<boolean>(isWeekMode);
     const [arrowState, setArrowState] = useState<'left' | 'right' | null>(null);
 
     useEffect(() => {
@@ -81,18 +92,20 @@ export const DatePicker = (props: DatePickerProps) => {
     const moveWeekLeft = () => {
         const newDate = new Date(currentDate);
         const prevWeek = new Date(newDate.setDate(newDate.getDate() - 7));
+        setArrowState('left');
         setCurrentDate(prevWeek);
     };
 
     const moveWeekRight = () => {
         const newDate = new Date(currentDate);
         const nextWeek = new Date(newDate.setDate(newDate.getDate() + 7));
+        setArrowState('right');
         setCurrentDate(nextWeek);
     };
 
-    // const changeMode = () => {
-    //     setIsWeek(!isWeek);
-    // };
+    const changeMode = () => {
+        setIsWeek(!isWeek);
+    };
 
     const setCurrentWeekValue = (date: Date) => {
         const { year, month, week } = getWeekOfMonth(date);
@@ -101,16 +114,16 @@ export const DatePicker = (props: DatePickerProps) => {
         setCurrentYear(year);
     };
 
-    const selectedDate = (day: string) => {
-        const newDate = new Date(currentYear, currentMonth - 1, parseInt(day));
+    const selectedDate = (date: DateObj) => {
+        const newDate = new Date(date.year, date.month - 1, date.day);
         onChange(newDate);
     };
 
-    const isEqualDate = (selectedDate: Date, day: string) => {
+    const isEqualDate = (selectedDate: Date, date: DateObj) => {
         const selectedYear = selectedDate.getFullYear();
         const selectedMonth = selectedDate.getMonth() + 1;
         const selectedDay = selectedDate.getDate();
-        if (selectedYear === currentYear && selectedMonth === currentMonth && parseInt(day) === selectedDay) {
+        if (selectedYear === date.year && selectedMonth === date.month && date.day === selectedDay) {
             return true;
         } else {
             return false;
@@ -118,42 +131,66 @@ export const DatePicker = (props: DatePickerProps) => {
     };
 
     const renderDay = () => {
-        return dayList.map((day: string, index: number) => {
-            const newDate = new Date(currentYear, currentMonth - 1, parseInt(day) + 1);
+        return dayList.map((date: DateObj, index: number) => {
+            const newDate = new Date(date.year, date.month - 1, date.day + 1);
+            const markerDate = date.year + '-' + date.month + '-' + date.day;
             let disabled = false;
 
-            // 오늘 이전의 날은 전부 disable처리
-            if (newDate < today) {
-                disabled = true;
-            }
-            // 시작 날짜(선택된 날짜) 기준으로 100일 이후는 disable처리
-            if (startDate && endDate) {
-                const hundredDate = new Date(new Date(startDate).setDate(startDate.getDate() + 100));
-                if (newDate > hundredDate) {
+            if (todayAfterDisabled) {
+                const disableDate = new Date(date.year, date.month - 1, date.day);
+                if (disableDate > today) {
                     disabled = true;
                 }
             }
 
-            if (index < 7 && parseInt(day) > 20) {
-                disabled = true;
-            } else if (index > 20 && parseInt(day) < 10) {
-                disabled = true;
+            if (isModal) {
+                // 오늘 이전의 날은 전부 disable처리
+                if (newDate < today) {
+                    disabled = true;
+                }
+                // 시작 날짜(선택된 날짜) 기준으로 100일 이후는 disable처리
+                if (startDate && endDate) {
+                    const hundredDate = new Date(new Date(startDate).setDate(startDate.getDate() + 100));
+                    if (newDate > hundredDate) {
+                        disabled = true;
+                    }
+                }
+            }
+            if (!isWeek) {
+                if (index < 7 && date.day > 20) {
+                    disabled = true;
+                } else if (index > 20 && date.day < 10) {
+                    disabled = true;
+                }
             }
             return (
                 <div
                     key={index}
-                    className={`w-[calc((100%/7))] 
+                    className={`w-[calc((100%/7))]
                     h-11 py-[2.5px] rounded-full inline-flex text-lg font-bold ${
-                        isEqualDate(today, day) ? (isEqualDate(selected, day) ? 'text-black' : 'text-primary') : ''
+                        isEqualDate(today, date) ? (isEqualDate(selected, date) ? 'text-black' : 'text-primary') : ''
                     }`}
-                    onClick={!disabled ? () => selectedDate(day) : () => null}
+                    onClick={!disabled ? () => selectedDate(date) : () => null}
                 >
                     <div
-                        className={`w-full h-full rounded-full flex justify-center items-center
-						${isEqualDate(selected, day) && !disabled ? 'bg-primary' : ''}
+                        className={`w-full h-full rounded-full flex flex-col justify-center items-center relative
+						${isEqualDate(selected, date) && !disabled ? 'bg-primary' : ''}
 						${disabled ? 'text-gray-100' : ''}`}
                     >
-                        <span className="mt-1">{day}</span>
+                        {markerDateObj && !isEqualDate(selected, date) && (
+                            <div className="flex gap-0.5 absolute top-0.5 left-1/2 -translate-x-1/2">
+                                {markerDateObj[markerDate] && markerDateObj[markerDate] === 'success' ? (
+                                    <div className="w-1.5 h-1.5 rounded-full bg-postive" />
+                                ) : null}
+                                {markerDateObj[markerDate] && markerDateObj[markerDate] === 'fail' ? (
+                                    <div className="w-1.5 h-1.5 rounded-full bg-negative" />
+                                ) : null}
+                                {markerDateObj[markerDate] && markerDateObj[markerDate] === 'warning' ? (
+                                    <div className="w-1.5 h-1.5 rounded-full bg-warning" />
+                                ) : null}
+                            </div>
+                        )}
+                        <span className="mt-0.5">{date.day}</span>
                     </div>
                 </div>
             );
@@ -161,27 +198,36 @@ export const DatePicker = (props: DatePickerProps) => {
     };
 
     return (
-        <div className="wrapper w-full min-w-[280px] h-auto pt-[15px] pr-[20.5px] pb-[18px] pl-[19.5px] m-auto rounded-lg shadow-normal">
+        <div
+            className={`wrapper w-full min-w-[280px] h-auto pt-[15px] pr-[20.5px] pb-[18px] pl-[19.5px] m-auto rounded-lg ${
+                isModal ? 'shadow-normal' : ''
+            }`}
+        >
             <div className="header w-full">
-                <div className="control flex gap-[20px] justify-center items-center mb-2">
-                    <div
-                        onClick={isWeek ? moveWeekLeft : moveLeft}
-                        className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
-                    >
-                        {arrowState === 'left' ? <ArrowActive className="rotate-180" /> : <Arrow />}
+                <div
+                    className={`control flex items-center mb-2 px-2 ${isModal ? 'justify-center' : 'justify-between'}`}
+                >
+                    <div className="flex gap-[20px]">
+                        <div
+                            onClick={isWeek ? moveWeekLeft : moveLeft}
+                            className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
+                        >
+                            {arrowState === 'left' ? <ArrowActive className="rotate-180" /> : <Arrow />}
+                        </div>
+                        <span className="title2">
+                            {isWeek || !isModal ? '' : `${currentYear}년`} {currentMonth}월{' '}
+                            {isWeek ? `${currentWeek}째주` : ''}
+                        </span>
+                        <div
+                            onClick={isWeek ? moveWeekRight : moveRight}
+                            className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
+                        >
+                            {arrowState === 'right' ? <ArrowActive /> : <Arrow className="rotate-180" />}
+                        </div>
                     </div>
-                    <span className="title2">
-                        {currentYear}년 {currentMonth}월 {isWeek ? `${currentWeek}주차` : ''}
-                    </span>
-                    <div
-                        onClick={isWeek ? moveWeekRight : moveRight}
-                        className="w-[24px] h-[24px] flex justify-center items-center cursor-pointer"
-                    >
-                        {arrowState === 'right' ? <ArrowActive /> : <Arrow className="rotate-180" />}
-                    </div>
-                    {/* <div className='w-12 flex justify-center items-center border rounded bg-slate-100 hover:bg-slate-200 cursor-pointer' onClick={changeMode}>
-                        {isWeek ? '주간' : '월간'}
-                    </div> */}
+                    {!isModal ? (
+                        <TextToggleButton isToggle={isWeek} onClick={changeMode} activeMsg="월간" inactiveMsg="주간" />
+                    ) : null}
                 </div>
                 <div className="week w-full h-[40px] flex items-center">
                     {weeks.map((week: string) => (
@@ -196,4 +242,7 @@ export const DatePicker = (props: DatePickerProps) => {
     );
 };
 
-DatePicker.defaultProps = {};
+DatePicker.defaultProps = {
+    isModal: false,
+    isWeekMode: false,
+};

@@ -13,7 +13,7 @@ export const routeTitle = [
     { path: '/badge', en: 'badge', ko: '뱃지', img: false },
 ];
 
-export const headerHiddenPaths = ['/login', '/profile'];
+export const headerHiddenPaths = ['/login', '/profile', '/'];
 export const headerBackPaths = [
     '/nottodo/edit',
     '/profile/edit',

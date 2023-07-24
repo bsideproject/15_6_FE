@@ -28,7 +28,7 @@ export const BottomPopup = (props: BottomPopupProps) => {
                 onClick={handleWrapperClose}
             ></div>
             <div
-                className={`b-popup title2 fixed transition-all duration-300 bottom-0 flex flex-col w-full z-50 h-auto py-[40px] px-[24px] bg-white rounded-t-xl ${
+                className={`b-popup title2 fixed transition-all duration-300 bottom-0 left-0 flex flex-col w-full z-50 h-auto py-[40px] px-[24px] bg-white rounded-t-xl ${
                     isOpen ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >

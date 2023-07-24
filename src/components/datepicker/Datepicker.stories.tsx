@@ -31,6 +31,15 @@ const meta = {
             type: 'function',
             description: '날짜 바뀔 때 실행할 함수 (SetAction)',
         },
+        isModal: {
+            defaultValue: false,
+            description: '달력 컴포넌트를 모달 형태로 사용할지 여부 (일부 기능이 제한됨)',
+        },
+        markerDateObj: {
+            control: false,
+            defaultValue: {},
+            description: '달력 일자에 일정이 있으면 마스킹 해줄 때 사용할 오브젝트',
+        },
     },
 } satisfies Meta<typeof DatePicker>;
 
@@ -44,4 +53,44 @@ export const Base: Story = (args: any) => {
     return <DatePicker {...args} selected={today} onChange={setToday} />;
 };
 
-Base.args = {};
+Base.args = {
+    isModal: false,
+};
+
+export const MarkerDatePicker: Story = (args: any) => {
+    const [today, setToday] = useState<Date>(new Date());
+
+    return <DatePicker {...args} selected={today} onChange={setToday} />;
+};
+
+MarkerDatePicker.args = {
+    isModal: false,
+    markerDateObj: {
+        '2023-7-6': 'success',
+        '2023-7-18': 'fail',
+        '2023-7-19': 'warning',
+    },
+};
+
+export const ModalDatePicker: Story = (args: any) => {
+    const [today, setToday] = useState<Date>(new Date());
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    return (
+        <div className="flex flex-col items-center gap-2">
+            <div
+                className="w-[100px] h-[38px] flex justify-center items-center title2 hover:bg-gray-100 cursor-pointer rounded-lg bg-gray-300"
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                {isOpen ? '달력 닫기' : '달력 열기'}
+            </div>
+            <div className={`${isOpen ? '' : 'hidden'}`}>
+                <DatePicker {...args} selected={today} onChange={setToday} />
+            </div>
+        </div>
+    );
+};
+
+ModalDatePicker.args = {
+    isModal: true,
+};
