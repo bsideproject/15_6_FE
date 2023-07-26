@@ -1,8 +1,9 @@
+import { isProductionMode } from '@/utils/env';
 import BaseLoginButton from './BaseLoginButton';
 import { ReactComponent as KakaoIcon } from '@/assets/img/icn_kakao.svg';
 
 const KakaoLoginButton = () => {
-    const redirectUri = import.meta.env.PROD
+    const redirectUri = isProductionMode()
         ? 'https://www.nottodoclub.store/login/kakao'
         : 'http://localhost:8080/login/kakao';
 
