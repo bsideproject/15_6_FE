@@ -79,3 +79,31 @@
     font-size: 10px;
     line-height: 140%;
 }
+
+.hide-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.rotate-up-1 {
+    transform: rotateX(60deg) translateZ(5px);
+}
+.rotate-up-2 {
+    transform: rotateX(30deg) translateZ(10px);
+}
+.rotate-up-3 {
+    transform: rotateX(30deg) translateZ(10px);
+}
+.rotate-down-1 {
+    transform: rotateX(-30deg) translateZ(10px);
+}
+.rotate-down-2 {
+    transform: rotateX(-60deg) translateZ(5px);
+}
+.rotate-down-3 {
+    transform: rotateX(-60deg) translateZ(10px);
+}

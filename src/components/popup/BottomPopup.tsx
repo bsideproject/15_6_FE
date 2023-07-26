@@ -19,17 +19,22 @@ export const BottomPopup = (props: BottomPopupProps) => {
     };
 
     return (
-        <div
-            className={`b-popup-wrapper w-full h-full fixed top-0 left-0 bg-gray-600/50 z-40 ${
-                isOpen ? 'block' : 'hidden'
-            }`}
-            ref={wrapperRef}
-            onClick={handleWrapperClose}
-        >
-            <div className="b-popup title2 fixed flex flex-col w-full h-auto bottom-0 py-[40px] px-[24px] bg-white rounded-t-xl">
+        <>
+            <div
+                className={`b-popup-wrapper w-full h-full fixed top-0 left-0 bg-gray-600/50 z-40 ${
+                    isOpen ? 'block' : 'hidden'
+                }`}
+                ref={wrapperRef}
+                onClick={handleWrapperClose}
+            ></div>
+            <div
+                className={`b-popup title2 fixed transition-all duration-300 bottom-0 left-0 flex flex-col w-full z-50 h-auto py-[40px] px-[24px] bg-white rounded-t-xl ${
+                    isOpen ? 'translate-y-0' : 'translate-y-full'
+                }`}
+            >
                 {title ? <div className="mb-7">{title}</div> : null}
                 {children}
             </div>
-        </div>
+        </>
     );
 };

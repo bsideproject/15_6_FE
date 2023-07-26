@@ -53,6 +53,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
                     setUserInfo({
                         email: data.email,
                         nickName: data.nickname,
+                        profileImgUrl: data.profileImgUrl,
                         tosYn: data.tosYn,
                     });
                 })
@@ -102,7 +103,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
         if (location.pathname.startsWith('/nottodo/edit')) {
             return setIsEditPopup(true);
         } else {
-            return () => router(-1);
+            return router(-1);
         }
     };
 

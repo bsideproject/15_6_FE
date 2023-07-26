@@ -28,7 +28,7 @@ export const Popup = (props: PopupProps) => {
         <div
             ref={wrapperRef}
             onClick={handleWrapperClose}
-            className={`wrapper w-full h-screen fixed top-0 left-0 bg-gray-600/50 z-40 ${isOpen ? 'block' : 'hidden'}`}
+            className={`wrapper w-full h-screen fixed top-0 left-0 bg-gray-600/50 z-50 ${isOpen ? 'block' : 'hidden'}`}
         >
             <div className="popup fixed w-[288px] min-h-fit h-auto inset-1/2 -translate-y-1/2 -translate-x-1/2 rounded-xl bg-gray-0 z-50 pt-[36px]">
                 {children}

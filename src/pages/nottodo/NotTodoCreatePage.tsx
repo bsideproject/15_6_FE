@@ -247,10 +247,22 @@ export default function NotTodoCreatePage() {
                     <span>권장 기간은 30일 이에요!</span>
                 </div>
                 <div className={`w-full bg-white pt-2 mb-24 ${isStartOpen ? 'block' : 'hidden'}`}>
-                    <DatePicker selected={startDate} startDate={startDate} endDate={endDate} onChange={setStartDate} />
+                    <DatePicker
+                        selected={startDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={setStartDate}
+                        isModal
+                    />
                 </div>
                 <div className={`w-full bg-white pt-2 mb-24 ${isEndOpen ? 'block' : 'hidden'}`}>
-                    <DatePicker selected={endDate} startDate={startDate} endDate={endDate} onChange={setEndDate} />
+                    <DatePicker
+                        selected={endDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={setEndDate}
+                        isModal
+                    />
                 </div>
             </div>
 
@@ -278,6 +290,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 1"
                         onChange={(e) => setMessage1(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                     <Input
                         type="textarea"
@@ -286,6 +300,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 2"
                         onChange={(e) => setMessage2(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                     <Input
                         type="textarea"
@@ -294,6 +310,8 @@ export default function NotTodoCreatePage() {
                         label="응원메시지 3"
                         onChange={(e) => setMessage3(e.target.value)}
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
+                        rows={1}
+                        maxLength={100}
                     />
                 </div>
                 <div className="w-full mb-24"></div>

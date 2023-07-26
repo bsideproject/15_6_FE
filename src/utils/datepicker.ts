@@ -1,5 +1,11 @@
+export interface DateObj {
+    year: number;
+    month: number;
+    day: number;
+}
+
 export const getMonthDayList = (year: number, month: number) => {
-    const dayList = [];
+    const dayList: DateObj[] = [];
     const lastday = new Date(year, month, 0).getDate();
     const weekday = new Date(year, month - 1).getDay();
 
@@ -9,13 +15,15 @@ export const getMonthDayList = (year: number, month: number) => {
     const beforeLastday = new Date(beforeYear, beforeMonth, 0).getDate();
 
     for (let i = weekday; i > 0; i--) {
-        dayList.push((beforeLastday - i + 1).toString());
+        dayList.push({ year: beforeYear, month: beforeMonth, day: beforeLastday - i + 1 });
     }
     for (let i = 1; i <= lastday; i++) {
-        dayList.push(i.toString());
+        dayList.push({ year: year, month: month, day: i });
     }
     for (let i = 1; dayList.length % 7 !== 0; i++) {
-        dayList.push(i.toString());
+        const nextMonth = month + 1 > 12 ? 1 : month + 1;
+        const nextYear = nextMonth === 1 ? year + 1 : year;
+        dayList.push({ year: nextYear, month: nextMonth, day: i });
     }
     return dayList;
 };
@@ -26,12 +34,15 @@ export const getWeekDayList = (date: Date) => {
     const diff = newDate.getDate() - dayOfWeek + 1;
     const monday = new Date(newDate.setDate(diff));
     const sunday = new Date(newDate.setDate(monday.getDate() - 1));
-    const weeks = [sunday.getDate().toString(), monday.getDate().toString()];
+    const weeks: DateObj[] = [
+        { year: sunday.getFullYear(), month: sunday.getMonth() + 1, day: sunday.getDate() },
+        { year: monday.getFullYear(), month: monday.getMonth() + 1, day: monday.getDate() },
+    ];
 
     for (let i = 1; i < 6; i++) {
         const nextDay = new Date(monday);
         nextDay.setDate(monday.getDate() + i);
-        weeks.push(nextDay.getDate().toString());
+        weeks.push({ year: nextDay.getFullYear(), month: nextDay.getMonth() + 1, day: nextDay.getDate() });
     }
     return weeks;
 };

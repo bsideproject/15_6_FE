@@ -33,6 +33,9 @@ export default {
             borderColor: {
                 gray: '#D5D5D5',
             },
+            gridTemplateColumns: {
+                'auto-fill': 'repeat(auto-fill, 102px)',
+            },
         },
     },
 };
