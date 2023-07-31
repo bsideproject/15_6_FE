@@ -2,7 +2,7 @@ import { post, put } from './core';
 
 export type LoginType = 'google' | 'apple' | 'kakao';
 
-export const postLogin = (type: LoginType, data: { code: string }) => {
+export const postLogin = (type: LoginType, data: { code: string; redirectUri: string }) => {
     return post(`/login/auth/${type}-callback`, data);
 };
 
