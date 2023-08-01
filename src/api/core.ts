@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { getCookie } from '@/utils/cookie';
-import { isProductionMode } from '@/utils/env';
 
 export const axiosInstance = axios.create({
     baseURL: '/api',
