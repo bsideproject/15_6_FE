@@ -3,7 +3,7 @@ import { getCookie } from '@/utils/cookie';
 import { isProductionMode } from '@/utils/env';
 
 export const axiosInstance = axios.create({
-    baseURL: isProductionMode() ? 'https://www.api.nottodoclub.store:443' : 'http://www.api.nottodoclub.store:8080',
+    baseURL: '/api',
 });
 
 axiosInstance.interceptors.request.use((config) => {
