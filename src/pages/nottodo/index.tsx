@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/card/Card';
 import { FloatingButton } from '@/components/buttons/floating/FloatingButton';
@@ -8,41 +8,45 @@ import { Tab } from '@/components/tab/Tab';
 import { BottomPopup } from '@/components/popup/BottomPopup';
 import { DeleteTitlePopup } from '@/components/popup/PopupGroup';
 import { Toast as toast } from '@/components/toast/Toast';
+import { deleteNottodo, getNottodoList, orderBy } from '@/api/nottodo';
 
 import { ReactComponent as ArrowDown } from '@/assets/img/icn_arrow_down.svg';
 import { ReactComponent as Radio } from '@/assets/img/icn_radio.svg';
 import { ReactComponent as RadioActive } from '@/assets/img/icn_radio_active.svg';
-
-// TODO get nottodo list
-const fakeData = [
-    {
-        title: '긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트 긴글 테스트',
-        goals: '',
-        startDate: new Date('2023-06-25'),
-        endDate: new Date('2023-07-15'),
-    },
-    {
-        title: 'title2',
-        goals: '목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다. 목표 입니다.',
-        startDate: new Date('2023-06-25'),
-        endDate: new Date('2023-07-01'),
-    },
-    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-    { title: 'title3', goals: '', startDate: new Date('2023-06-01'), endDate: new Date('2023-06-15') },
-];
+import { useRecoilState } from 'recoil';
+import { currentNottodoState, nottodoWithIdProps, progressState } from '@/recoil/nottodo/atom';
 
 export default function NotTodoPage() {
     const router = useNavigate();
+    const [nottodoList, setNottodoList] = useState<nottodoWithIdProps[]>([]);
+    const [currentNottodo, setCurrentNottodo] = useRecoilState<nottodoWithIdProps | null>(currentNottodoState);
     const [isDesc, setIsDesc] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<number>(0);
+    const [progressState, setProgressState] = useState<progressState>('');
+
+    useEffect(() => {
+        getNottodos(isDesc ? 'in_close' : 'in_distant');
+    }, [isDesc]);
+
+    const getNottodos = async (orderby: orderBy) => {
+        const data = await getNottodoList(orderby);
+        setNottodoList(data);
+    };
 
     const handleTabs = (idx: number) => {
         setActiveTab(idx);
+        if (idx === 1) {
+            setProgressState('IN_PROGRESS');
+        } else if (idx === 2) {
+            setProgressState('BEFORE_START');
+        } else if (idx === 3) {
+            setProgressState('COMPLETE');
+        } else {
+            setProgressState('');
+        }
     };
 
     const handleSort = (bool: boolean) => {
@@ -58,7 +62,18 @@ export default function NotTodoPage() {
 
     const handleDelete = () => {
         // TODO 낫투두 삭제하는 api 연결
-        toast('낫투두 삭제가 완료되었어요.');
+        if (currentNottodo) {
+            deleteNottodo(currentNottodo?.notToDoId).then(() => {
+                toast('낫투두 삭제가 완료되었어요.');
+                getNottodos(isDesc ? 'in_close' : 'in_distant');
+                setCurrentNottodo(null);
+            });
+        }
+    };
+
+    const handleOpenMenu = (nottodo: nottodoWithIdProps) => {
+        setCurrentNottodo(nottodo);
+        setIsMenuOpen(true);
     };
 
     return (
@@ -80,26 +95,31 @@ export default function NotTodoPage() {
                     </Tab>
                 </Tabs>
             </div>
-            <div className="flex justify-end px-[20px] my-[12px]" onClick={() => setIsSortOpen(true)}>
-                <div className="w-auto h-[36px] rounded-full border bg-white flex justify-center items-center px-[8px] cursor-pointer">
+            <div className="flex justify-end px-[20px] my-[12px]">
+                <div
+                    className="w-auto h-[36px] rounded-full border bg-white flex justify-center items-center px-[8px] cursor-pointer"
+                    onClick={() => setIsSortOpen(true)}
+                >
                     <div className="w-[16px] h-[16px] flex justify-center items-center mr-[4px]">
                         <ArrowDown />
                     </div>
                     <span className="mt-0.5 pr-1">{isDesc ? '마감 최신순' : '마감 오래된순'}</span>
                 </div>
             </div>
-            {fakeData.map((v, index) => (
-                <Card
-                    key={'card' + index}
-                    className="mb-[8px]"
-                    title={v.title}
-                    startDate={v.startDate}
-                    endDate={v.endDate}
-                    goals={v.goals}
-                    openMenu={() => setIsMenuOpen(true)}
-                />
-            ))}
-            {fakeData.length < 3 ? (
+            {nottodoList
+                .filter((v) => (progressState !== '' ? v.progressState === progressState : true))
+                .map((v, index) => (
+                    <Card
+                        key={'card' + index}
+                        className="mb-[8px]"
+                        title={v.notToDoText}
+                        startDate={new Date(v.startDate)}
+                        endDate={new Date(v.endDate)}
+                        goal={v.goal}
+                        openMenu={() => handleOpenMenu(v)}
+                    />
+                ))}
+            {nottodoList.filter((v) => (progressState !== '' ? v.progressState === progressState : true)).length < 3 ? (
                 <div className="px-[20px] mt-[24px]">
                     <DashedButton onClick={() => router('/nottodo/create')}>
                         <span>+ 낫투두 추가하기</span>
@@ -110,7 +130,7 @@ export default function NotTodoPage() {
             )}
             <BottomPopup isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
                 {/* TODO 라우터로 수정 페이지 아이디 넣어서 이동 */}
-                <div className="body1 w-full" onClick={() => router('/nottodo/edit')}>
+                <div className="body1 w-full" onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}>
                     낫투두 수정
                 </div>
                 <div className="h-[24px]" />

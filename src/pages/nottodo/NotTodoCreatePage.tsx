@@ -3,8 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BottomButton } from '@/components/buttons/BottomButton';
 import { Input } from '@/components/common/input/Input';
 import { DatePicker } from '@/components/datepicker/Datepicker';
-import { diffDay, formatDateToString } from '@/utils/datepicker';
+import { diffDay, formatDateToString, dateToyyyymmdd } from '@/utils/datepicker';
 import { Toast } from '@/components/toast/Toast';
+import { createNottodo, editNottodo } from '@/api/nottodo';
+import { useRecoilValue } from 'recoil';
+import { currentNottodoState } from '@/recoil/nottodo/atom';
 
 export default function NotTodoCreatePage() {
     const router = useNavigate();
@@ -23,13 +26,25 @@ export default function NotTodoCreatePage() {
     const [isEndOpen, setIsEndOpen] = useState<boolean>(false);
     const [isEditPage, setIsEditPage] = useState<boolean>(false);
     const [phase, setPhase] = useState<number>(0);
+    const currentNottodo = useRecoilValue(currentNottodoState);
 
     const [titleHelpText, setTitleHelpText] = useState<string>('');
     const [dateHelpText, setDateHelpText] = useState<string>('');
 
     useEffect(() => {
         if (params && params.id) {
+            console.log('id = ', params.id);
             setIsEditPage(true);
+            if (currentNottodo) {
+                setTitle(currentNottodo.notToDoText);
+                // TODO 날짜 형식 yyyy-mm-dd로 맞추면 new Date() 사용하기
+                // setStartDate(currentNottodo.startDate);
+                // setEndDate(currentNottodo.endDate);
+                setGoal(currentNottodo.goal ?? '');
+                setMessage1(currentNottodo.cheerUpMsg1 ?? '');
+                setMessage2(currentNottodo.cheerUpMsg2 ?? '');
+                setMessage3(currentNottodo.cheerUpMsg3 ?? '');
+            }
         }
     }, []);
 
@@ -129,44 +144,46 @@ export default function NotTodoCreatePage() {
         } else if (phase === 1) {
             // TODO 등록 api 실행
             const payload = {
-                title,
-                startDate,
-                endDate,
+                notToDoText: title,
+                startDate: dateToyyyymmdd(startDate),
+                endDate: dateToyyyymmdd(endDate),
                 goal,
-                message1,
-                message2,
-                message3,
+                cheerUpMsg1: message1,
+                cheerUpMsg2: message2,
+                cheerUpMsg3: message3,
             };
-            console.log('payload', payload);
-            // TODO api 성공 후 리스트 페이지로 이동 및 토스트 띄우기
-            router('/nottodo');
-            Toast(
-                <>
-                    <span className="text-center">낫투두 등록 완료!</span>
-                    <span>메인 홈에서 성공 여부를 기록해보세요.✍️</span>
-                </>,
-            );
+            createNottodo(payload).then(() => {
+                router('/nottodo');
+                Toast(
+                    <>
+                        <span className="text-center">낫투두 등록 완료!</span>
+                        <span>메인 홈에서 성공 여부를 기록해보세요.✍️</span>
+                    </>,
+                );
+            });
         }
     };
 
     const handleEdit = () => {
         const titleResult = handleTitleValidation();
         const dateReulst = handleDateValidation();
-        if (titleResult && dateReulst) {
+        if (titleResult && dateReulst && params.id) {
             // TODO 수정 api 실행
             const payload = {
-                title,
-                startDate,
-                endDate,
+                notToDoText: title,
+                // TODO 날짜 형식 변경
+                startDate: dateToyyyymmdd(startDate),
+                endDate: dateToyyyymmdd(endDate),
                 goal,
-                message1,
-                message2,
-                message3,
+                cheerUpMsg1: message1,
+                cheerUpMsg2: message2,
+                cheerUpMsg3: message3,
             };
-            console.log('payload', payload);
-            // TODO api 성공 후 리스트 페이지로 이동 및 토스트 띄우기
-            router('/nottodo');
-            Toast(<span className="text-center">수정이 완료되었습니다.</span>);
+            // TODO get id
+            editNottodo(params.id, payload).then(() => {
+                router('/nottodo');
+                Toast(<span className="text-center">수정이 완료되었습니다.</span>);
+            });
         }
     };
 
