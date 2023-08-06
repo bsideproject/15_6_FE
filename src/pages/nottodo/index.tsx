@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/card/Card';
 import { FloatingButton } from '@/components/buttons/floating/FloatingButton';
