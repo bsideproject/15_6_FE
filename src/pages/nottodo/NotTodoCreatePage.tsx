@@ -33,13 +33,11 @@ export default function NotTodoCreatePage() {
 
     useEffect(() => {
         if (params && params.id) {
-            console.log('id = ', params.id);
             setIsEditPage(true);
             if (currentNottodo) {
                 setTitle(currentNottodo.notToDoText);
-                // TODO 날짜 형식 yyyy-mm-dd로 맞추면 new Date() 사용하기
-                // setStartDate(currentNottodo.startDate);
-                // setEndDate(currentNottodo.endDate);
+                setStartDate(new Date(currentNottodo.startDate));
+                setEndDate(new Date(currentNottodo.endDate));
                 setGoal(currentNottodo.goal ?? '');
                 setMessage1(currentNottodo.cheerUpMsg1 ?? '');
                 setMessage2(currentNottodo.cheerUpMsg2 ?? '');
@@ -142,11 +140,10 @@ export default function NotTodoCreatePage() {
                 setPhase(1);
             }
         } else if (phase === 1) {
-            // TODO 등록 api 실행
             const payload = {
                 notToDoText: title,
-                startDate: dateToyyyymmdd(startDate),
-                endDate: dateToyyyymmdd(endDate),
+                startDate: dateToyyyymmdd(startDate, '-'),
+                endDate: dateToyyyymmdd(endDate, '-'),
                 goal,
                 cheerUpMsg1: message1,
                 cheerUpMsg2: message2,
@@ -168,18 +165,15 @@ export default function NotTodoCreatePage() {
         const titleResult = handleTitleValidation();
         const dateReulst = handleDateValidation();
         if (titleResult && dateReulst && params.id) {
-            // TODO 수정 api 실행
             const payload = {
                 notToDoText: title,
-                // TODO 날짜 형식 변경
-                startDate: dateToyyyymmdd(startDate),
-                endDate: dateToyyyymmdd(endDate),
+                startDate: dateToyyyymmdd(startDate, '-'),
+                endDate: dateToyyyymmdd(endDate, '-'),
                 goal,
                 cheerUpMsg1: message1,
                 cheerUpMsg2: message2,
                 cheerUpMsg3: message3,
             };
-            // TODO get id
             editNottodo(params.id, payload).then(() => {
                 router('/nottodo');
                 Toast(<span className="text-center">수정이 완료되었습니다.</span>);

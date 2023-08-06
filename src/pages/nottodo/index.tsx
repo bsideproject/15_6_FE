@@ -27,10 +27,6 @@ export default function NotTodoPage() {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [progressState, setProgressState] = useState<progressState>('');
 
-    useEffect(() => {
-        getNottodos(isDesc ? 'in_close' : 'in_distant');
-    }, [isDesc]);
-
     const getNottodos = async (orderby: orderBy) => {
         const data = await getNottodoList(orderby);
         setNottodoList(data);
@@ -49,10 +45,10 @@ export default function NotTodoPage() {
         }
     };
 
-    const handleSort = (bool: boolean) => {
-        setIsDesc(bool);
+    const handleSort = (desc: boolean) => {
+        setIsDesc(desc);
         setIsSortOpen(false);
-        // TODO 리스트 필터링
+        getNottodos(desc ? 'in_close' : 'in_distant');
     };
 
     const handleDeletePopupOpen = () => {
@@ -61,7 +57,6 @@ export default function NotTodoPage() {
     };
 
     const handleDelete = () => {
-        // TODO 낫투두 삭제하는 api 연결
         if (currentNottodo) {
             deleteNottodo(currentNottodo?.notToDoId).then(() => {
                 toast('낫투두 삭제가 완료되었어요.');
@@ -79,7 +74,6 @@ export default function NotTodoPage() {
     return (
         <div className="flex flex-col min-h-[calc((100vh-60px)-56px)] bg-gray-50">
             <div className="sticky top-0">
-                {/* TODO filtering */}
                 <Tabs>
                     <Tab active={activeTab} currentIdx={0} onClick={() => handleTabs(0)}>
                         <span>전체</span>
@@ -129,7 +123,6 @@ export default function NotTodoPage() {
                 <FloatingButton onClick={() => router('/nottodo/create')} />
             )}
             <BottomPopup isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-                {/* TODO 라우터로 수정 페이지 아이디 넣어서 이동 */}
                 <div className="body1 w-full" onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}>
                     낫투두 수정
                 </div>
@@ -138,7 +131,6 @@ export default function NotTodoPage() {
                     낫투두 삭제
                 </div>
             </BottomPopup>
-            {/* TODO 정렬 기능 */}
             <BottomPopup title="정렬" isOpen={isSortOpen} setIsOpen={setIsSortOpen}>
                 <div className="body1 flex w-full items-center cursor-pointer" onClick={() => handleSort(true)}>
                     {isDesc ? <RadioActive /> : <Radio />}
