@@ -1,4 +1,4 @@
-import { post, put } from './core';
+import { post, put, get, deleteApi } from './core';
 
 export type LoginType = 'google' | 'apple' | 'kakao';
 
@@ -11,5 +11,17 @@ export const putAgreement = () => {
 };
 
 export const getUserInfo = () => {
-    return post('/user/info');
+    return get('/user/info');
+};
+
+export const deleteUser = () => {
+    return deleteApi('/user');
+};
+
+export const putNickname = (nickname: string) => {
+    return put(`/user/nickname?nickname=${nickname}`);
+};
+
+export const putAutoLogin = (yn: boolean) => {
+    return put(`/login/auto-login?yn=${yn}`);
 };

@@ -4,7 +4,8 @@ export type userInfoType = {
     nickName: string;
     email: string;
     profileImgUrl: string;
-    tosYn: 'Y' | 'N';
+    isAgreed: boolean;
+    isAutoLogin: boolean;
 };
 
 export const userInfoState = atom<userInfoType | null>({
@@ -16,6 +17,6 @@ export const userAgreedState = selector({
     key: 'userAgreed',
     get: ({ get }) => {
         const userInfo = get(userInfoState);
-        return userInfo?.tosYn === 'Y';
+        return userInfo?.isAgreed;
     },
 });

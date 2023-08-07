@@ -15,11 +15,9 @@ import { Header } from '@/components/layout/Header';
 import { ConfirmPopup } from '@/components/popup/PopupGroup';
 import { useIsBack, useHasBottomNavBar, useHasHeader, useTitle, useIsClose } from '@/utils/location';
 import { useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userAgreedState, userInfoState } from '@/recoil/user/atom';
 import { useEffect } from 'react';
-import { getUserInfo } from '@/api/login';
 import { useLogIn } from '@/hooks/useLogin';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 type DefaultLayoutProp = {
     children: React.ReactNode;
@@ -39,32 +37,17 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
 
     const navCount = 4;
 
-    const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-    const userAgreed = useRecoilValue(userAgreedState);
     const navigate = useNavigate();
-    const { isLoggedIn, logOut } = useLogIn();
+    const { isLoggedIn } = useLogIn();
+    const { userInfo } = useUserInfo();
 
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');
-        } else if (isLoggedIn && !userInfo) {
-            getUserInfo()
-                .then((data) => {
-                    setUserInfo({
-                        email: data.email,
-                        nickName: data.nickname,
-                        profileImgUrl: data.profileImgUrl,
-                        tosYn: data.tosYn,
-                    });
-                })
-                .catch((e) => {
-                    console.log('사용자 정보 조회 실패', e);
-                    logOut();
-                });
-        } else if (isLoggedIn && userInfo && !userAgreed) {
+        } else if (userInfo && !userInfo.isAgreed) {
             navigate('/agreement');
         }
-    }, [isLoggedIn, userInfo, setUserInfo]);
+    }, [isLoggedIn, userInfo]);
 
     const bottomMenuItem = (
         menuName: string,
