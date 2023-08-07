@@ -11,13 +11,13 @@ import { ConfirmPopup } from '@/components/popup/PopupGroup';
 import { ReactComponent as Kakao } from '@/assets/img/icn_kakao.svg';
 // import { ReactComponent as Apple } from '@/assets/img/icn_apple.svg';
 import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
-import { useRecoilValue } from 'recoil';
-import { userInfoState } from '@/recoil/user/atom';
+import { putAutoLogin, putNickname } from '@/api/login';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 export default function ProfileEditPage() {
     const { withdraw } = useLogIn();
     // TODO user 정보 세팅
-    const userInfo = useRecoilValue(userInfoState);
+    const { userInfo, updateUserInfo, updateAutoLogin } = useUserInfo();
     const [userName, setUserName] = useState<string>('');
     const [userEmail, setUserEmail] = useState<string>('');
     const [userImage, setUserImage] = useState<string>('');
@@ -29,30 +29,40 @@ export default function ProfileEditPage() {
             setUserName(userInfo.nickName);
             setUserEmail(userInfo.email);
             setUserImage(userInfo.profileImgUrl);
+            setIsAutoLogin(userInfo.isAutoLogin);
         }
     }, [userInfo]);
 
     const handleAutoLogin = () => {
-        setIsAutoLogin(!isAutoLogin);
-        if (!isAutoLogin) {
-            // TODO 자동 로그인 api 실행
-        }
+        const newAutoLogin = !isAutoLogin;
+
+        setIsAutoLogin(newAutoLogin);
+        putAutoLogin(newAutoLogin)
+            .then((data) => {
+                updateAutoLogin(data.autoLoginYn);
+            })
+            .catch((e) => {
+                console.log('자동 로그인 토글 실패', e);
+            });
     };
 
     const handleUserName = () => {
-        // TODO user name 변경하는 api 실행
-
-        // 성공 시 변경 알림
-        Toast('닉네임 변경이 완료되었어요.');
+        putNickname(userName)
+            .then((data) => {
+                updateUserInfo('nickName', data.nickname);
+            })
+            .then(() => {
+                Toast('닉네임 변경이 완료되었어요.');
+            })
+            .catch(() => {
+                Toast('에러가 발생했습니다.');
+            });
     };
 
     const handleDeleteAccount = () => {
-        // TODO 탈퇴 버튼 클릭 시 실행할 로직
-        withdraw();
-        // 로그아웃하고 회원 탈퇴 api 실행하고 성공하면 로그인 페이지로 리디렉션 및 토스트 알림
-        // router('/login');
-        Toast('탈퇴가 완료되었습니다.');
-        // 실패 시 실패했다는 토스트 알림
+        withdraw().then(() => {
+            Toast('탈퇴가 완료되었습니다.');
+        });
     };
 
     return (
