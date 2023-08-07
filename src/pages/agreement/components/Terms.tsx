@@ -31,7 +31,6 @@ const Terms = ({ children, onAllCheck }: TermsProps) => {
     const [isAllChecked, setIsAllChecked] = useState(false);
 
     const addTerm = (term: Term) => {
-        console.log('add', term);
         setTerms((terms) => [...terms, term]);
     };
 

@@ -17,9 +17,10 @@ import { ReactComponent as Textfile } from '@/assets/img/icn_textfile.svg';
 import { ReactComponent as Message } from '@/assets/img/icn_message.svg';
 import { ReactComponent as Logout } from '@/assets/img/icn_logout.svg';
 import { ReactComponent as DefaultProfile } from '@/assets/img/icn_profile.svg';
+import Popup from '@/components/popup/Popup';
+import { useState } from 'react';
 
 export default function ProfilePage() {
-    const { logOut } = useLogIn();
     const router = useNavigate();
     const userInfo = useRecoilValue(userInfoState);
     const menuTitleList = ['알림 설정', /*'공지사항',*/ '개인정보 처리방침', '서비스 이용약관', '문의 / 건의하기'];
@@ -46,9 +47,6 @@ export default function ProfilePage() {
                 {isArrow ? <MenuArrow className="ml-auto" /> : null}
             </div>
         );
-    };
-    const handleLogout = () => {
-        logOut();
     };
 
     return (
@@ -79,11 +77,46 @@ export default function ProfilePage() {
                 </div>
                 <div className="h-4"></div>
                 <div className="w-full h-[1px] bg-gray-100"></div>
-                <div className="w-full flex w-full h-14 items-center gap-3" onClick={handleLogout}>
-                    <Logout />
-                    <span className="body1 text-gray-900">로그아웃</span>
-                </div>
+                <LogOutTab />
             </div>
         </div>
     );
 }
+
+const LogOutTab = () => {
+    const [showPopup, setShowPopup] = useState(false);
+    const { logOut } = useLogIn();
+    const onClick = () => {
+        setShowPopup(true);
+    };
+
+    const onConfirm = () => {
+        logOut();
+    };
+
+    const onCancel = () => {
+        setShowPopup(false);
+    };
+
+    return (
+        <>
+            <div className="w-full flex w-full h-14 items-center gap-3" onClick={onClick}>
+                <Logout />
+                <span className="body1 text-gray-900">로그아웃</span>
+            </div>
+            <Popup isOpen={showPopup} setIsOpen={setShowPopup}>
+                <Popup.Body>
+                    <span>로그아웃 하시겠습니까?</span>
+                </Popup.Body>
+                <Popup.Footer>
+                    <button className="w-full body1 text-gray-500" onClick={onCancel}>
+                        취소
+                    </button>
+                    <button className="w-full title2 text-negative" onClick={onConfirm}>
+                        로그아웃
+                    </button>
+                </Popup.Footer>
+            </Popup>
+        </>
+    );
+};
