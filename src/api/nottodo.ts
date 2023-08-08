@@ -3,7 +3,7 @@ import { nottodoProps } from '@/recoil/nottodo/atom';
 
 export type orderBy = 'in_close' | 'in_distant';
 export const getNottodoList = async (orderby?: orderBy) => {
-    const params = '/nottodo/list' + orderby ? `?orderBy=${orderby}` : '';
+    const params = orderby ? `?orderBy=${orderby}` : '';
     return await get('/nottodo/list' + params);
 };
 
