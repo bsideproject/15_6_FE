@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/card/Card';
 import { FloatingButton } from '@/components/buttons/floating/FloatingButton';
@@ -27,6 +27,10 @@ export default function NotTodoPage() {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [progressState, setProgressState] = useState<progressState>('');
 
+    useEffect(() => {
+        getNottodos(isDesc ? 'in_close' : 'in_distant');
+    }, [isDesc]);
+
     const getNottodos = async (orderby: orderBy) => {
         const data = await getNottodoList(orderby);
         setNottodoList(data);
@@ -48,7 +52,6 @@ export default function NotTodoPage() {
     const handleSort = (desc: boolean) => {
         setIsDesc(desc);
         setIsSortOpen(false);
-        getNottodos(desc ? 'in_close' : 'in_distant');
     };
 
     const handleDeletePopupOpen = () => {
