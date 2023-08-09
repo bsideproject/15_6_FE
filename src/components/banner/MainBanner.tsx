@@ -38,42 +38,16 @@ export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) 
     );
 };
 
-export const MainBanner = () => {
+type MainBannerProps = {
+    onChange: (index: number) => void;
+    banners: Array<Object>;
+};
+
+export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
     const [bulletColor, setBulletColor] = useState('');
     const [activeBulletColor, setActiveBulletColor] = useState('');
 
-    const banners = [
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 1,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 2,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 3,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 4,
-        },
-    ];
-
-    const onActiveItemChange = (index: number) => {
+    const setPaginationBulletStyle = (index: number) => {
         if (index % 2 === 0) {
             setBulletColor('bg-gray-900/30');
             setActiveBulletColor('bg-gray-900');
@@ -81,6 +55,11 @@ export const MainBanner = () => {
             setBulletColor('bg-[#FFD12B]/30');
             setActiveBulletColor('bg-[#FFD12B]');
         }
+    };
+
+    const onActiveItemChange = (index: number) => {
+        setPaginationBulletStyle(index);
+        onChange(index);
     };
 
     const onClickBanner = (index: number) => {
