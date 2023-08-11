@@ -9,38 +9,13 @@ import { Toast } from '@/components/toast/Toast';
 import { ReactComponent as Plus } from '@/assets/img/icn_plus.svg';
 import { ReactComponent as Good } from '@/assets/img/icn_thumb_up.svg';
 import { ReactComponent as Bad } from '@/assets/img/icn_thumb_down.svg';
-import { MainBanner } from '@/components/banner/MainBanner';
+import { ReactComponent as Empty } from '@/assets/img/icn_empty.svg';
 
-const banners = [
-    {
-        title: '7시 이후 무조건 야식 참기 🔥',
-        description: '발리여행 전까지 체지방 2kg 감량',
-        totalDate: 51,
-        success: 23,
-        id: 1,
-    },
-    {
-        title: '7시 이후 무조건 야식 참기 🔥',
-        description: '발리여행 전까지 체지방 2kg 감량',
-        totalDate: 51,
-        success: 23,
-        id: 2,
-    },
-    {
-        title: '7시 이후 무조건 야식 참기 🔥',
-        description: '발리여행 전까지 체지방 2kg 감량',
-        totalDate: 51,
-        success: 23,
-        id: 3,
-    },
-    {
-        title: '7시 이후 무조건 야식 참기 🔥',
-        description: '발리여행 전까지 체지방 2kg 감량',
-        totalDate: 51,
-        success: 23,
-        id: 4,
-    },
-];
+import { MainBanner, NotToDoBannerItemProps } from '@/components/banner/MainBanner';
+import { getNottodoList } from '@/api/nottodo';
+import { nottodoWithIdProps } from '@/recoil/nottodo/atom';
+import { diffDay } from '@/utils/datepicker';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
     const [startDate, setStartDate] = useState<Date>(new Date());
@@ -52,10 +27,25 @@ export default function HomePage() {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
     const [inputWarning, setInputWarning] = useState<boolean>(false);
-    const [notToDos, setNotToDos] = useState(banners);
+    const [formattedNotToDoList, setFormattedNotToDoList] = useState<NotToDoBannerItemProps[]>([]);
 
     useEffect(() => {
-        // 낫투두 목록 api
+        const getNottodos = async () => {
+            const data = await getNottodoList('in_close');
+            setFormattedNotToDoList(
+                data
+                    .filter((item: nottodoWithIdProps) => item.progressState === 'IN_PROGRESS')
+                    .map((item: nottodoWithIdProps) => ({
+                        id: item.notToDoId,
+                        title: item.goal,
+                        description: item.notToDoText,
+                        totalDate: diffDay(item.endDate, item.startDate),
+                        success: diffDay(new Date(), item.startDate),
+                    })),
+            );
+        };
+
+        getNottodos();
         // 절제기록 목록 api
     }, []);
 
@@ -103,9 +93,13 @@ export default function HomePage() {
         setIsOpenCreatePopup(true);
     };
 
+    if (formattedNotToDoList.length === 0) {
+        return <NoNotToDos />;
+    }
+
     return (
         <div>
-            <MainBanner banners={notToDos} onChange={console.log} />
+            <MainBanner banners={formattedNotToDoList} onChange={console.log} />
             <div className="px-5">
                 <DatePicker selected={startDate} onChange={setStartDate} isWeekMode todayAfterDisabled />
                 <div className="w-full h-[1px] bg-gray-50"></div>
@@ -242,3 +236,22 @@ export default function HomePage() {
         </div>
     );
 }
+
+const NoNotToDos = () => {
+    const navigate = useNavigate();
+    return (
+        <div className="flex flex-col items-center justify-center">
+            <Empty className="mt-40 mb-1" />
+            <span className="mb-10 flex flex-col items-center text-gray-500 text-base font-suit-bold">
+                <p>아래 버튼을 눌러</p>
+                <p>새로운 낫투두를 등록해주세요.</p>
+            </span>
+            <button
+                className="w-[182px] py-3 px-10 bg-primary text-base font-suit-bold rounded-lg"
+                onClick={() => navigate('/nottodo/create')}
+            >
+                낫투두 등록하기
+            </button>
+        </div>
+    );
+};

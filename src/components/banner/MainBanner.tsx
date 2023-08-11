@@ -2,14 +2,17 @@ import { ReactComponent as Eyes } from '@/assets/img/icn_eyes.svg';
 import Carousel from '@/components/carousel/Carousel';
 import { useState, MouseEventHandler } from 'react';
 
+export type NotToDoBannerItemProps = {
+    id: number;
+    title: string;
+    description: string;
+    totalDate: number;
+    success: number;
+};
+
 type BannerItemProps = {
     isOddIndex: boolean;
-    info: {
-        title: string;
-        description: string;
-        totalDate: number;
-        success: number;
-    };
+    info: NotToDoBannerItemProps;
     clickHandler: MouseEventHandler<HTMLDivElement>;
 };
 
@@ -40,7 +43,7 @@ export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) 
 
 type MainBannerProps = {
     onChange: (index: number) => void;
-    banners: Array<Object>;
+    banners: Array<NotToDoBannerItemProps>;
 };
 
 export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
@@ -81,11 +84,15 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
                     </Carousel.Item>
                 ))}
             </Carousel.ItemContainer>
-            <Carousel.Pagination
-                wrapperClass="w-full inline-flex absolute top-5 justify-center"
-                bulletClass={defaultBulletClass + bulletColor}
-                activeBulletClass={defaultBulletClass + activeBulletColor}
-            />
+            <>
+                {banners.length > 1 && (
+                    <Carousel.Pagination
+                        wrapperClass="w-full inline-flex absolute top-5 justify-center"
+                        bulletClass={defaultBulletClass + bulletColor}
+                        activeBulletClass={defaultBulletClass + activeBulletColor}
+                    />
+                )}
+            </>
         </Carousel>
     );
 };

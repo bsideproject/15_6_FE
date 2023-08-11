@@ -128,7 +128,7 @@ export const formatDateToString = (date: string | Date) => {
     return `${year}.${month}.${day}(${dayOfWeek})`;
 };
 
-export const diffDay = (startDate: Date, endDate: Date) => {
+export const diffDay = (startDate: Date | string, endDate: Date | string) => {
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime();
 
