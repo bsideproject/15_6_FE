@@ -51,7 +51,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: connect ssh
-              uses: appleboy/ssh-action@master
+              uses: appleboy/ssh-action@v1.0.0
               with:
                   host: ${{ secrets.NCP_SERVER_HOST }}
                   username: ${{ secrets.NCP_SERVER_USERNAME }}
