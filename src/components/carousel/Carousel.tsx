@@ -55,17 +55,7 @@ type ItemContainerProps = {
 };
 
 const ItemContainer = ({ children }: ItemContainerProps) => {
-    return (
-        <div
-            className="flex overflow-auto w-full"
-            style={{
-                scrollSnapType: 'x mandatory',
-                flexFlow: 'row nowrap',
-            }}
-        >
-            {children}
-        </div>
-    );
+    return <div className="flex overflow-auto w-full snap-mandatory snap-x hide-scroll">{children}</div>;
 };
 
 type ItemProps = {
@@ -129,13 +119,7 @@ const Item = ({ children, index }: ItemProps) => {
     }, []);
 
     return (
-        <div
-            className="inline-flex items-center justify-center w-full flex-none"
-            ref={targetRef}
-            style={{
-                scrollSnapAlign: 'center',
-            }}
-        >
+        <div className="inline-flex items-center justify-center w-full flex-none snap-center" ref={targetRef}>
             {children}
         </div>
     );
