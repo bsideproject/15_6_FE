@@ -1,6 +1,6 @@
 import { ReactComponent as Eyes } from '@/assets/img/icn_eyes.svg';
 import Carousel from '@/components/carousel/Carousel';
-import { useState, MouseEventHandler } from 'react';
+import { useState, MouseEventHandler, useEffect } from 'react';
 
 export type NotToDoBannerItemProps = {
     id: number;
@@ -50,6 +50,10 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
     const [bulletColor, setBulletColor] = useState('');
     const [activeBulletColor, setActiveBulletColor] = useState('');
 
+    useEffect(() => {
+        onChange(banners[0].id);
+    }, []);
+
     const setPaginationBulletStyle = (index: number) => {
         if (index % 2 === 0) {
             setBulletColor('bg-gray-900/30');
@@ -61,8 +65,11 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
     };
 
     const onActiveItemChange = (index: number) => {
-        setPaginationBulletStyle(index);
         onChange(index);
+    };
+
+    const onHalfActiveItemChange = (index: number) => {
+        setPaginationBulletStyle(index);
     };
 
     const onClickBanner = (index: number) => {
@@ -72,10 +79,10 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
     const defaultBulletClass = 'mx-1 inline-block w-2 h-2 rounded-full ';
 
     return (
-        <Carousel onActive={onActiveItemChange}>
+        <Carousel onActive={onActiveItemChange} onHalfActive={onHalfActiveItemChange}>
             <Carousel.ItemContainer>
                 {banners.map((info, index) => (
-                    <Carousel.Item key={info.id}>
+                    <Carousel.Item key={info.id} index={index}>
                         <BannerItem
                             info={info}
                             isOddIndex={index % 2 !== 0}
