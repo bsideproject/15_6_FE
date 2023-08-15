@@ -4,9 +4,9 @@ import { ReactComponent as Arrow } from '@/assets/img/icn_arrow.svg';
 import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg';
 import { TextToggleButton } from '@/components/buttons/toggle/TextToggleButton';
 
-type NottodoStatus = 'success' | 'fail' | 'warning';
+export type NottodoStatus = 'success' | 'fail' | 'warning';
 
-interface MarkerDate {
+export interface MarkerDate {
     [date: string]: NottodoStatus;
 }
 
@@ -67,23 +67,23 @@ export const DatePicker = (props: DatePickerProps) => {
         }
     }, [currentDate]);
 
-    // useEffect(() => {
-    //     if (isWeek) {
-    //         const tempDate = new Date(currentDate);
-    //         const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
-    //         const isFirstWeek = firstDate.getDay() < 4;
-    //         if (isFirstWeek) {
-    //             setDayList(getWeekDayList(firstDate));
-    //             setCurrentWeekValue(firstDate);
-    //             setCurrentDate(firstDate);
-    //         } else {
-    //             const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
-    //             setDayList(getWeekDayList(newDate));
-    //             setCurrentWeekValue(newDate);
-    //             setCurrentDate(newDate);
-    //         }
-    //     } else setDayList(getMonthDayList(currentYear, currentMonth));
-    // }, [isWeek]);
+    useEffect(() => {
+        if (isWeek) {
+            const tempDate = new Date(currentDate);
+            const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
+            const isFirstWeek = firstDate.getDay() < 4;
+            if (isFirstWeek) {
+                setDayList(getWeekDayList(firstDate));
+                setCurrentWeekValue(firstDate);
+                setCurrentDate(firstDate);
+            } else {
+                const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
+                setDayList(getWeekDayList(newDate));
+                setCurrentWeekValue(newDate);
+                setCurrentDate(newDate);
+            }
+        } else setDayList(getMonthDayList(currentYear, currentMonth));
+    }, [isWeek]);
 
     const moveLeft = () => {
         setCurrentDate(new Date(currentYear, currentMonth - 2, 1));
@@ -154,7 +154,8 @@ export const DatePicker = (props: DatePickerProps) => {
     const renderDay = () => {
         return dayList.map((date: DateObj, index: number) => {
             const newDate = new Date(date.year, date.month - 1, date.day + 1);
-            const markerDate = date.year + '-' + date.month + '-' + date.day;
+            const markerDate =
+                date.year + '-' + date.month.toString().padStart(2, '0') + '-' + date.day.toString().padStart(2, '0');
             let disabled = false;
 
             if (todayAfterDisabled) {

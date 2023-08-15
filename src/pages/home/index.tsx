@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FloatingMenuButton } from '@/components/buttons/floating/FloatingMenuButton';
-import { DatePicker } from '@/components/datepicker/Datepicker';
+import { DatePicker, MarkerDate, NottodoStatus } from '@/components/datepicker/Datepicker';
 import { BottomPopup } from '@/components/popup/BottomPopup';
 import { Input } from '@/components/common/input/Input';
 import { ConfirmPopup } from '@/components/popup/PopupGroup';
@@ -38,6 +38,7 @@ export default function HomePage() {
     const [selectedModeration, setSelectedModeration] = useState<ModerationType | null>(null);
     const [isWeekMode, setIsWeekMode] = useState(true);
     const [selectedDateModerations, setSelectedDateModerations] = useState<ModerationType[]>([]);
+    const [markerDateObj, setMarkerDateObj] = useState<MarkerDate>({});
 
     useEffect(() => {
         fetchNotToDos();
@@ -50,6 +51,37 @@ export default function HomePage() {
     useEffect(() => {
         fetchSelecteDateModerationList();
     }, [selectedDate]);
+
+    useEffect(() => {
+        const obj = moderations.reduce((acc, moderation) => {
+            const dateString = dateToyyyymmdd(new Date(moderation.regDtm), '-');
+            acc[dateString] = acc[dateString] || [];
+            acc[dateString].push(moderation.recordType);
+
+            return acc;
+        }, {} as { [key: string]: string[] });
+
+        const markerObject = Object.keys(obj).reduce((acc, key) => {
+            const types = obj[key];
+            const total = types.length;
+            const successCount = types.filter((type) => type === 'success').length;
+            const successPercentage = (successCount / total) * 100;
+
+            let successStatus;
+            if (successPercentage >= 80) {
+                successStatus = 'success';
+            } else if (successPercentage >= 55) {
+                successStatus = 'warning';
+            } else {
+                successStatus = 'fail';
+            }
+
+            acc[key] = successStatus as NottodoStatus;
+            return acc;
+        }, {} as MarkerDate);
+
+        setMarkerDateObj(markerObject);
+    }, [moderations]);
 
     const fetchNotToDos = async () => {
         const data = await getNottodoList('in_close');
@@ -187,6 +219,7 @@ export default function HomePage() {
                     onChange={handleDateChange}
                     onModeChange={handleModeChange}
                     onCurrentDateChange={handleCurrentDateChange}
+                    markerDateObj={markerDateObj}
                     isWeekMode
                     todayAfterDisabled
                 />
