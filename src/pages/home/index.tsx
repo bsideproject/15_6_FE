@@ -13,15 +13,16 @@ import { ReactComponent as Empty } from '@/assets/img/icn_empty.svg';
 
 import { MainBanner, NotToDoBannerItemProps } from '@/components/banner/MainBanner';
 import { getNottodoList } from '@/api/nottodo';
-import { diffDay } from '@/utils/datepicker';
+import { dateToyyyymmdd, diffDay } from '@/utils/datepicker';
 import { useNavigate } from 'react-router-dom';
 import { deleteModeration, getModerationList, ModerationType, postModeration, putModeration } from '@/api/moderation';
 
 import { ModerationList } from './components/moderationList';
-import { dateToAmPmTimeFormat } from '@/utils/date';
+import { dateToAmPmTimeFormat, getFirstDateOfMonth, getLastDateOfMonth, isSameDate } from '@/utils/date';
 
 export default function HomePage() {
-    const [startDate, setStartDate] = useState<Date>(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
     const [isOpenDeleteConfirm, setIsOpenDeleteConfirm] = useState<boolean>(false);
     const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -35,11 +36,20 @@ export default function HomePage() {
     const [currentNotToDoId, setCurrentNotToDoId] = useState(0);
     const [moderations, setModerations] = useState<ModerationType[]>([]);
     const [selectedModeration, setSelectedModeration] = useState<ModerationType | null>(null);
+    const [isWeekMode, setIsWeekMode] = useState(true);
+    const [selectedDateModerations, setSelectedDateModerations] = useState<ModerationType[]>([]);
 
     useEffect(() => {
         fetchNotToDos();
-        fetchModerationList();
     }, []);
+
+    useEffect(() => {
+        fetchModerationList();
+    }, [isWeekMode, currentDate]);
+
+    useEffect(() => {
+        fetchSelecteDateModerationList();
+    }, [selectedDate]);
 
     const fetchNotToDos = async () => {
         const data = await getNottodoList('in_close');
@@ -57,8 +67,24 @@ export default function HomePage() {
     };
 
     const fetchModerationList = async () => {
-        const data = await getModerationList('20230801', '20230831');
+        let startDate: Date;
+        let endDate: Date;
+        if (isWeekMode) {
+            const day = currentDate.getDay();
+            startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - day);
+            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + (6 - day));
+        } else {
+            startDate = getFirstDateOfMonth(currentDate);
+            endDate = getLastDateOfMonth(currentDate);
+        }
+
+        const data = await getModerationList(dateToyyyymmdd(startDate), dateToyyyymmdd(endDate));
         setModerations(data);
+    };
+
+    const fetchSelecteDateModerationList = async () => {
+        const data = await getModerationList(dateToyyyymmdd(selectedDate), dateToyyyymmdd(selectedDate));
+        setSelectedDateModerations(data);
     };
 
     const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +108,8 @@ export default function HomePage() {
         }
         if (isModify && selectedModeration) {
             await putModeration(selectedModeration.moderationId, {
-                content: selectedModeration.content,
-                recordType: selectedModeration.recordType,
+                content: inputValue,
+                recordType: isSuccess ? 'success' : 'fail',
             });
 
             Toast('수정이 완료되었어요.');
@@ -108,6 +134,7 @@ export default function HomePage() {
         setIsOpenCreatePopup(false);
         setInputValue('');
         fetchModerationList();
+        fetchSelecteDateModerationList();
     };
 
     const handleDeleteRecord = async () => {
@@ -116,6 +143,7 @@ export default function HomePage() {
             setIsDetailPopup(false);
             Toast('절제 기록 삭제가 완료되었어요.');
             fetchModerationList();
+            fetchSelecteDateModerationList();
         }
     };
 
@@ -134,6 +162,18 @@ export default function HomePage() {
         setIsDetailPopup(true);
     };
 
+    const handleDateChange = (date: Date) => {
+        setSelectedDate(date);
+    };
+
+    const handleModeChange = (isWeekMode: boolean) => {
+        setIsWeekMode(isWeekMode);
+    };
+
+    const handleCurrentDateChange = (date: Date) => {
+        setCurrentDate(date);
+    };
+
     if (formattedNotToDoList.length === 0) {
         return <NoNotToDos />;
     }
@@ -142,13 +182,20 @@ export default function HomePage() {
         <div>
             <MainBanner banners={formattedNotToDoList} onChange={setCurrentNotToDoId} />
             <div className="px-5">
-                <DatePicker selected={startDate} onChange={setStartDate} isWeekMode todayAfterDisabled />
+                <DatePicker
+                    selected={selectedDate}
+                    onChange={handleDateChange}
+                    onModeChange={handleModeChange}
+                    onCurrentDateChange={handleCurrentDateChange}
+                    isWeekMode
+                    todayAfterDisabled
+                />
                 <div className="w-full h-[1px] bg-gray-50"></div>
-                {moderations.length === 0 ? (
-                    <EmptyAddButton onClick={handleOpenBottomPopup} />
+                {selectedDateModerations.length === 0 ? (
+                    <NoModerations selectedDate={selectedDate} onClick={handleOpenBottomPopup} />
                 ) : (
                     <>
-                        <ModerationList moderations={moderations} clickHandler={handleModerationClick} />
+                        <ModerationList moderations={selectedDateModerations} clickHandler={handleModerationClick} />
                         <FloatingModerationAddButton
                             isOpenMenu={isOpenMenu}
                             setIsOpenMenu={setIsOpenMenu}
@@ -318,14 +365,21 @@ const FloatingModerationAddButton = ({
     );
 };
 
-const EmptyAddButton = ({ onClick }: { onClick: (open: boolean) => void }) => {
+const NoModerations = ({ onClick, selectedDate }: { onClick: (open: boolean) => void; selectedDate: Date }) => {
     return (
         <>
             <div className="h-8"></div>
             <div className="w-full h-[120px] bg-gray-50 flex items-center justify-center rounded-lg">
-                <button className="w-[140px] h-[48px] bg-gray-900 text-white rounded-lg" onClick={() => onClick(true)}>
-                    기록 추가
-                </button>
+                {isSameDate(selectedDate, new Date()) ? (
+                    <button
+                        className="w-[140px] h-[48px] bg-gray-900 text-white rounded-lg"
+                        onClick={() => onClick(true)}
+                    >
+                        기록 추가
+                    </button>
+                ) : (
+                    <span className="text-gray-500 text-base font-bold">기록이 없는 날이에요.</span>
+                )}
             </div>
         </>
     );

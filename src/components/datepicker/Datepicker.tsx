@@ -13,6 +13,8 @@ interface MarkerDate {
 export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
+    onModeChange?: (isWeek: boolean) => void;
+    onCurrentDateChange?: (date: Date) => void;
     startDate?: Date;
     endDate?: Date;
     isModal: boolean;
@@ -22,7 +24,18 @@ export interface DatePickerProps {
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-    const { selected, onChange, startDate, endDate, isModal, markerDateObj, isWeekMode, todayAfterDisabled } = props;
+    const {
+        selected,
+        onChange,
+        onModeChange,
+        onCurrentDateChange,
+        startDate,
+        endDate,
+        isModal,
+        markerDateObj,
+        isWeekMode,
+        todayAfterDisabled,
+    } = props;
 
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -49,22 +62,28 @@ export const DatePicker = (props: DatePickerProps) => {
     }, [currentYear, currentMonth]);
 
     useEffect(() => {
-        if (isWeek) {
-            const tempDate = new Date(currentDate);
-            const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
-            const isFirstWeek = firstDate.getDay() < 4;
-            if (isFirstWeek) {
-                setDayList(getWeekDayList(firstDate));
-                setCurrentWeekValue(firstDate);
-                setCurrentDate(firstDate);
-            } else {
-                const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
-                setDayList(getWeekDayList(newDate));
-                setCurrentWeekValue(newDate);
-                setCurrentDate(newDate);
-            }
-        } else setDayList(getMonthDayList(currentYear, currentMonth));
-    }, [isWeek]);
+        if (onCurrentDateChange) {
+            onCurrentDateChange(currentDate);
+        }
+    }, [currentDate]);
+
+    // useEffect(() => {
+    //     if (isWeek) {
+    //         const tempDate = new Date(currentDate);
+    //         const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
+    //         const isFirstWeek = firstDate.getDay() < 4;
+    //         if (isFirstWeek) {
+    //             setDayList(getWeekDayList(firstDate));
+    //             setCurrentWeekValue(firstDate);
+    //             setCurrentDate(firstDate);
+    //         } else {
+    //             const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
+    //             setDayList(getWeekDayList(newDate));
+    //             setCurrentWeekValue(newDate);
+    //             setCurrentDate(newDate);
+    //         }
+    //     } else setDayList(getMonthDayList(currentYear, currentMonth));
+    // }, [isWeek]);
 
     const moveLeft = () => {
         setCurrentDate(new Date(currentYear, currentMonth - 2, 1));
@@ -104,6 +123,9 @@ export const DatePicker = (props: DatePickerProps) => {
 
     const changeMode = () => {
         setIsWeek(!isWeek);
+        if (onModeChange) {
+            onModeChange(!isWeek);
+        }
     };
 
     const setCurrentWeekValue = (date: Date) => {
