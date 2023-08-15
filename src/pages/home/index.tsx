@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FloatingMenuButton } from '@/components/buttons/floating/FloatingMenuButton';
 import { DatePicker } from '@/components/datepicker/Datepicker';
 import { BottomPopup } from '@/components/popup/BottomPopup';
@@ -13,9 +13,12 @@ import { ReactComponent as Empty } from '@/assets/img/icn_empty.svg';
 
 import { MainBanner, NotToDoBannerItemProps } from '@/components/banner/MainBanner';
 import { getNottodoList } from '@/api/nottodo';
-import { nottodoWithIdProps } from '@/recoil/nottodo/atom';
 import { diffDay } from '@/utils/datepicker';
 import { useNavigate } from 'react-router-dom';
+import { deleteModeration, getModerationList, ModerationType, postModeration, putModeration } from '@/api/moderation';
+
+import { ModerationList } from './components/moderationList';
+import { dateToAmPmTimeFormat } from '@/utils/date';
 
 export default function HomePage() {
     const [startDate, setStartDate] = useState<Date>(new Date());
@@ -25,29 +28,38 @@ export default function HomePage() {
     const [isOpenCreatePopup, setIsOpenCreatePopup] = useState<boolean>(false);
     const [isOpenDetailPopup, setIsDetailPopup] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    const [isModify, setIsModify] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
     const [inputWarning, setInputWarning] = useState<boolean>(false);
     const [formattedNotToDoList, setFormattedNotToDoList] = useState<NotToDoBannerItemProps[]>([]);
+    const [currentNotToDoId, setCurrentNotToDoId] = useState(0);
+    const [moderations, setModerations] = useState<ModerationType[]>([]);
+    const [selectedModeration, setSelectedModeration] = useState<ModerationType | null>(null);
 
     useEffect(() => {
-        const getNottodos = async () => {
-            const data = await getNottodoList('in_close');
-            setFormattedNotToDoList(
-                data
-                    .filter((item: nottodoWithIdProps) => item.progressState === 'IN_PROGRESS')
-                    .map((item: nottodoWithIdProps) => ({
-                        id: item.notToDoId,
-                        title: item.goal,
-                        description: item.notToDoText,
-                        totalDate: diffDay(item.endDate, item.startDate),
-                        success: diffDay(new Date(), item.startDate),
-                    })),
-            );
-        };
-
-        getNottodos();
-        // 절제기록 목록 api
+        fetchNotToDos();
+        fetchModerationList();
     }, []);
+
+    const fetchNotToDos = async () => {
+        const data = await getNottodoList('in_close');
+        setFormattedNotToDoList(
+            data
+                .filter((item) => item.progressState === 'IN_PROGRESS')
+                .map((item) => ({
+                    id: item.notToDoId,
+                    title: item.goal,
+                    description: item.notToDoText,
+                    totalDate: diffDay(item.endDate, item.startDate),
+                    success: diffDay(new Date(), item.startDate),
+                })),
+        );
+    };
+
+    const fetchModerationList = async () => {
+        const data = await getModerationList('20230801', '20230831');
+        setModerations(data);
+    };
 
     const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -60,37 +72,66 @@ export default function HomePage() {
         setIsOpenMenu(false);
         setIsOpenCreatePopup(true);
         setIsSuccess(success);
+        setIsModify(false);
+        setInputValue('');
     };
 
-    const handleCreateRecord = () => {
+    const handleSubmitRecord = async () => {
         if (inputValue.length < 4) {
             setInputWarning(true);
         }
-        // TODO 등록 api 실행
+        if (isModify && selectedModeration) {
+            await putModeration(selectedModeration.moderationId, {
+                content: selectedModeration.content,
+                recordType: selectedModeration.recordType,
+            });
+
+            Toast('수정이 완료되었어요.');
+        } else {
+            await postModeration(currentNotToDoId, {
+                content: inputValue,
+                recordType: isSuccess ? 'success' : 'fail',
+            });
+
+            Toast(
+                isSuccess ? (
+                    '성공 기록 완료! 👍'
+                ) : (
+                    <div className="flex flex-col items-center">
+                        <span>실패도 경험이죠!</span>
+                        <span>다음엔 꼭 성공해주실거죠? 😉</span>
+                    </div>
+                ),
+            );
+        }
+
         setIsOpenCreatePopup(false);
         setInputValue('');
-        Toast(
-            isSuccess ? (
-                '성공 기록 완료! 👍'
-            ) : (
-                <div className="flex flex-col items-center">
-                    <span>실패도 경험이죠!</span>
-                    <span>다음엔 꼭 성공해주실거죠? 😉</span>
-                </div>
-            ),
-        );
+        fetchModerationList();
     };
 
-    const handleDeleteRecord = () => {
-        // TODO delete api
-        setIsDetailPopup(false);
-        Toast('절제 기록 삭제가 완료되었어요.');
+    const handleDeleteRecord = async () => {
+        if (selectedModeration?.moderationId) {
+            await deleteModeration(selectedModeration.moderationId);
+            setIsDetailPopup(false);
+            Toast('절제 기록 삭제가 완료되었어요.');
+            fetchModerationList();
+        }
     };
 
     const handleOpenEdit = () => {
-        // TODO 디테일 팝업 열면서 얻은 message 가져오기
-        setInputValue('');
-        setIsOpenCreatePopup(true);
+        if (selectedModeration) {
+            setIsDetailPopup(false);
+            setIsOpenCreatePopup(true);
+            setIsModify(true);
+            setIsSuccess(selectedModeration.recordType === 'success');
+            setInputValue(selectedModeration.content);
+        }
+    };
+
+    const handleModerationClick = (id: number) => {
+        setSelectedModeration(moderations.find((moderation) => moderation.moderationId === id) || null);
+        setIsDetailPopup(true);
     };
 
     if (formattedNotToDoList.length === 0) {
@@ -99,52 +140,22 @@ export default function HomePage() {
 
     return (
         <div>
-            <MainBanner banners={formattedNotToDoList} onChange={console.log} />
+            <MainBanner banners={formattedNotToDoList} onChange={setCurrentNotToDoId} />
             <div className="px-5">
                 <DatePicker selected={startDate} onChange={setStartDate} isWeekMode todayAfterDisabled />
                 <div className="w-full h-[1px] bg-gray-50"></div>
-                {/* 기록 없는 날 */}
-                <div className="h-8"></div>
-                <div className="w-full h-[120px] bg-gray-50 flex items-center justify-center rounded-lg">
-                    <button
-                        className="w-[140px] h-[48px] bg-gray-900 text-white rounded-lg"
-                        onClick={() => handleOpenBottomPopup(true)}
-                    >
-                        기록 추가
-                    </button>
-                </div>
-
-                {/* 기록 있는 날 */}
-                <FloatingMenuButton isOpen={isOpenMenu} setIsOpen={setIsOpenMenu}>
-                    <FloatingMenuButton.Trigger className="w-[52px] h-[52px]">
-                        <div
-                            className={`${
-                                isOpenMenu ? 'bg-transparent' : 'bg-gray-900'
-                            } w-full h-full flex justify-center items-center rounded-full`}
-                            onClick={() => setIsOpenMenu(!isOpenMenu)}
-                        >
-                            <Plus className={`${isOpenMenu ? 'rotate-45' : 'rotate-0'} transition-all`} fill="white" />
-                        </div>
-                    </FloatingMenuButton.Trigger>
-                    <FloatingMenuButton.Menu>
-                        <div className="flex w-full h-full relative" onClick={() => handleOpenBottomPopup(true)}>
-                            <span className="absolute w-[calc(100%*2)] right-full top-1/2 -translate-y-1/2 text-right mr-4 title2 text-gray-0">
-                                성공 기록
-                            </span>
-                            <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-postive cursor-pointer">
-                                <Good fill="white" />
-                            </div>
-                        </div>
-                        <div className="flex w-full h-full relative" onClick={() => handleOpenBottomPopup(false)}>
-                            <span className="absolute w-[calc(100%*2)] right-full top-1/2 -translate-y-1/2 text-right mr-4 title2 text-gray-0">
-                                실패 기록
-                            </span>
-                            <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-negative cursor-pointer">
-                                <Bad fill="white" />
-                            </div>
-                        </div>
-                    </FloatingMenuButton.Menu>
-                </FloatingMenuButton>
+                {moderations.length === 0 ? (
+                    <EmptyAddButton onClick={handleOpenBottomPopup} />
+                ) : (
+                    <>
+                        <ModerationList moderations={moderations} clickHandler={handleModerationClick} />
+                        <FloatingModerationAddButton
+                            isOpenMenu={isOpenMenu}
+                            setIsOpenMenu={setIsOpenMenu}
+                            handleOpenBottomPopup={handleOpenBottomPopup}
+                        />
+                    </>
+                )}
                 <BottomPopup isOpen={isOpenCreatePopup} setIsOpen={setIsOpenCreatePopup}>
                     <div className="w-full h-auto flex justify-end mb-6" onClick={() => setIsOpenConfirm(true)}>
                         <Plus className="rotate-45" fill="#A2A2A2" />
@@ -182,8 +193,7 @@ export default function HomePage() {
                         isScroll
                     />
                     <div className="h-10"></div>
-                    {/* TODO api 연결 */}
-                    <button className="w-full h-[48px] bg-gray-900 rounded-lg text-gray-0" onClick={handleCreateRecord}>
+                    <button className="w-full h-[48px] bg-gray-900 rounded-lg text-gray-0" onClick={handleSubmitRecord}>
                         완료
                     </button>
                 </BottomPopup>
@@ -193,16 +203,25 @@ export default function HomePage() {
                     </div>
                     <div className="h-7"></div>
                     <div className="w-full flex justify-between">
-                        {/* TODO 내용에 맞게 설정 */}
                         <div className="flex title2 gap-2">
-                            <Good fill="#73EF5F" />
-                            <span>성공 기록</span>
+                            {selectedModeration?.recordType === 'success' ? (
+                                <>
+                                    <Good fill="#73EF5F" />
+                                    <span>성공 기록</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Bad fill="#FF4F60" />
+                                    <span>실패 기록</span>
+                                </>
+                            )}
                         </div>
-                        <span className="body2 text-gray-500">11:59 pm</span>
+                        <span className="body2 text-gray-500">
+                            {selectedModeration?.regDtm && dateToAmPmTimeFormat(new Date(selectedModeration?.regDtm))}
+                        </span>
                     </div>
                     <div className="h-5"></div>
-                    {/* TODO message 내용에 맞게 설정 */}
-                    <div className="body1">message</div>
+                    <div className="body1">{selectedModeration?.content}</div>
                     <div className="h-10"></div>
                     <div className="flex gap-2">
                         <button
@@ -253,5 +272,61 @@ const NoNotToDos = () => {
                 낫투두 등록하기
             </button>
         </div>
+    );
+};
+
+const FloatingModerationAddButton = ({
+    isOpenMenu,
+    setIsOpenMenu,
+    handleOpenBottomPopup,
+}: {
+    isOpenMenu: boolean;
+    setIsOpenMenu: Dispatch<SetStateAction<boolean>>;
+    handleOpenBottomPopup: (open: boolean) => void;
+}) => {
+    return (
+        <FloatingMenuButton isOpen={isOpenMenu} setIsOpen={setIsOpenMenu}>
+            <FloatingMenuButton.Trigger className="w-[52px] h-[52px]">
+                <div
+                    className={`${
+                        isOpenMenu ? 'bg-transparent' : 'bg-gray-900'
+                    } w-full h-full flex justify-center items-center rounded-full`}
+                    onClick={() => setIsOpenMenu(!isOpenMenu)}
+                >
+                    <Plus className={`${isOpenMenu ? 'rotate-45' : 'rotate-0'} transition-all`} fill="white" />
+                </div>
+            </FloatingMenuButton.Trigger>
+            <FloatingMenuButton.Menu>
+                <div className="flex w-full h-full relative" onClick={() => handleOpenBottomPopup(true)}>
+                    <span className="absolute w-[calc(100%*2)] right-full top-1/2 -translate-y-1/2 text-right mr-4 title2 text-gray-0">
+                        성공 기록
+                    </span>
+                    <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-postive cursor-pointer">
+                        <Good fill="white" />
+                    </div>
+                </div>
+                <div className="flex w-full h-full relative" onClick={() => handleOpenBottomPopup(false)}>
+                    <span className="absolute w-[calc(100%*2)] right-full top-1/2 -translate-y-1/2 text-right mr-4 title2 text-gray-0">
+                        실패 기록
+                    </span>
+                    <div className="w-[52px] h-[52px] rounded-full flex justify-center items-center bg-negative cursor-pointer">
+                        <Bad fill="white" />
+                    </div>
+                </div>
+            </FloatingMenuButton.Menu>
+        </FloatingMenuButton>
+    );
+};
+
+const EmptyAddButton = ({ onClick }: { onClick: (open: boolean) => void }) => {
+    return (
+        <>
+            <div className="h-8"></div>
+            <div className="w-full h-[120px] bg-gray-50 flex items-center justify-center rounded-lg">
+                <button className="w-[140px] h-[48px] bg-gray-900 text-white rounded-lg" onClick={() => onClick(true)}>
+                    기록 추가
+                </button>
+            </div>
+        </>
     );
 };

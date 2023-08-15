@@ -36,7 +36,6 @@ export const DatePicker = (props: DatePickerProps) => {
 
     useEffect(() => {
         const { year, month, week } = getWeekOfMonth(currentDate);
-        // console.log('current date', currentDate, year, month, week)
         if (isWeek) {
             setCurrentWeek(week);
             setCurrentYear(year);
@@ -226,7 +225,7 @@ export const DatePicker = (props: DatePickerProps) => {
                         </div>
                     </div>
                     {!isModal ? (
-                        <TextToggleButton isToggle={isWeek} onClick={changeMode} activeMsg="월간" inactiveMsg="주간" />
+                        <TextToggleButton isToggle={isWeek} onClick={changeMode} activeMsg="주간" inactiveMsg="월간" />
                     ) : null}
                 </div>
                 <div className="week w-full h-[40px] flex items-center">
