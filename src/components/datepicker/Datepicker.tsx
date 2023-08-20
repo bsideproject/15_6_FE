@@ -69,20 +69,11 @@ export const DatePicker = (props: DatePickerProps) => {
 
     useEffect(() => {
         if (isWeek) {
-            const tempDate = new Date(currentDate);
-            const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
-            const isFirstWeek = firstDate.getDay() < 4;
-            if (isFirstWeek) {
-                setDayList(getWeekDayList(firstDate));
-                setCurrentWeekValue(firstDate);
-                setCurrentDate(firstDate);
-            } else {
-                const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
-                setDayList(getWeekDayList(newDate));
-                setCurrentWeekValue(newDate);
-                setCurrentDate(newDate);
-            }
-        } else setDayList(getMonthDayList(currentYear, currentMonth));
+            setCurrentWeekValue(selected);
+            setDayList(getWeekDayList(selected));
+        } else {
+            setDayList(getMonthDayList(selected.getFullYear(), selected.getMonth() + 1));
+        }
     }, [isWeek]);
 
     const moveLeft = () => {
