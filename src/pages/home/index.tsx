@@ -190,7 +190,7 @@ export default function HomePage() {
     };
 
     const handleModerationClick = (id: number) => {
-        setSelectedModeration(moderations.find((moderation) => moderation.moderationId === id) || null);
+        setSelectedModeration(selectedDateModerations.find((moderation) => moderation.moderationId === id) || null);
         setIsDetailPopup(true);
     };
 
