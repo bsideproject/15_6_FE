@@ -4,15 +4,17 @@ import { ReactComponent as Arrow } from '@/assets/img/icn_arrow.svg';
 import { ReactComponent as ArrowActive } from '@/assets/img/icn_arrow_active.svg';
 import { TextToggleButton } from '@/components/buttons/toggle/TextToggleButton';
 
-type NottodoStatus = 'success' | 'fail' | 'warning';
+export type NottodoStatus = 'success' | 'fail' | 'warning';
 
-interface MarkerDate {
+export interface MarkerDate {
     [date: string]: NottodoStatus;
 }
 
 export interface DatePickerProps {
     selected: Date;
     onChange: (date: Date) => void;
+    onModeChange?: (isWeek: boolean) => void;
+    onCurrentDateChange?: (date: Date) => void;
     startDate?: Date;
     endDate?: Date;
     isModal: boolean;
@@ -22,7 +24,18 @@ export interface DatePickerProps {
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-    const { selected, onChange, startDate, endDate, isModal, markerDateObj, isWeekMode, todayAfterDisabled } = props;
+    const {
+        selected,
+        onChange,
+        onModeChange,
+        onCurrentDateChange,
+        startDate,
+        endDate,
+        isModal,
+        markerDateObj,
+        isWeekMode,
+        todayAfterDisabled,
+    } = props;
 
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -36,7 +49,6 @@ export const DatePicker = (props: DatePickerProps) => {
 
     useEffect(() => {
         const { year, month, week } = getWeekOfMonth(currentDate);
-        // console.log('current date', currentDate, year, month, week)
         if (isWeek) {
             setCurrentWeek(week);
             setCurrentYear(year);
@@ -50,21 +62,18 @@ export const DatePicker = (props: DatePickerProps) => {
     }, [currentYear, currentMonth]);
 
     useEffect(() => {
+        if (onCurrentDateChange) {
+            onCurrentDateChange(currentDate);
+        }
+    }, [currentDate]);
+
+    useEffect(() => {
         if (isWeek) {
-            const tempDate = new Date(currentDate);
-            const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
-            const isFirstWeek = firstDate.getDay() < 4;
-            if (isFirstWeek) {
-                setDayList(getWeekDayList(firstDate));
-                setCurrentWeekValue(firstDate);
-                setCurrentDate(firstDate);
-            } else {
-                const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
-                setDayList(getWeekDayList(newDate));
-                setCurrentWeekValue(newDate);
-                setCurrentDate(newDate);
-            }
-        } else setDayList(getMonthDayList(currentYear, currentMonth));
+            setCurrentWeekValue(selected);
+            setDayList(getWeekDayList(selected));
+        } else {
+            setDayList(getMonthDayList(selected.getFullYear(), selected.getMonth() + 1));
+        }
     }, [isWeek]);
 
     const moveLeft = () => {
@@ -105,6 +114,9 @@ export const DatePicker = (props: DatePickerProps) => {
 
     const changeMode = () => {
         setIsWeek(!isWeek);
+        if (onModeChange) {
+            onModeChange(!isWeek);
+        }
     };
 
     const setCurrentWeekValue = (date: Date) => {
@@ -133,7 +145,8 @@ export const DatePicker = (props: DatePickerProps) => {
     const renderDay = () => {
         return dayList.map((date: DateObj, index: number) => {
             const newDate = new Date(date.year, date.month - 1, date.day + 1);
-            const markerDate = date.year + '-' + date.month + '-' + date.day;
+            const markerDate =
+                date.year + '-' + date.month.toString().padStart(2, '0') + '-' + date.day.toString().padStart(2, '0');
             let disabled = false;
 
             if (todayAfterDisabled) {
@@ -226,7 +239,7 @@ export const DatePicker = (props: DatePickerProps) => {
                         </div>
                     </div>
                     {!isModal ? (
-                        <TextToggleButton isToggle={isWeek} onClick={changeMode} activeMsg="월간" inactiveMsg="주간" />
+                        <TextToggleButton isToggle={isWeek} onClick={changeMode} activeMsg="주간" inactiveMsg="월간" />
                     ) : null}
                 </div>
                 <div className="week w-full h-[40px] flex items-center">

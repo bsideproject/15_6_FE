@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, createContext, useContext, TouchEvent } from 'react';
+import { useEffect, useState, createContext, useContext, useRef } from 'react';
 
 type CarouselContextType = {
     length: number;
@@ -6,6 +6,7 @@ type CarouselContextType = {
     addItem: () => void;
     deleteItem: () => void;
     setActiveIndex: (index: number) => void;
+    setHalfActiveIndex: (index: number) => void;
 };
 
 const CarouselContext = createContext<CarouselContextType | null>(null);
@@ -13,10 +14,12 @@ const CarouselContext = createContext<CarouselContextType | null>(null);
 type CarouselProps = {
     children: JSX.Element | JSX.Element[];
     onActive: (index: number) => void;
+    onHalfActive: (index: number) => void;
 };
 
-const Carousel = ({ children, onActive }: CarouselProps) => {
+const Carousel = ({ children, onActive, onHalfActive }: CarouselProps) => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
+    const [halfActiveIndex, setHalfActiveIndex] = useState<number>(0);
     const [length, setLength] = useState<number>(0);
 
     const addItem = () => {
@@ -31,12 +34,17 @@ const Carousel = ({ children, onActive }: CarouselProps) => {
         onActive(activeIndex);
     }, [activeIndex]);
 
+    useEffect(() => {
+        onHalfActive(halfActiveIndex);
+    }, [halfActiveIndex]);
+
     const contextValue = {
         length,
         addItem,
         deleteItem,
         activeIndex,
         setActiveIndex,
+        setHalfActiveIndex,
     };
 
     return <CarouselContext.Provider value={contextValue}>{children}</CarouselContext.Provider>;
@@ -47,74 +55,62 @@ type ItemContainerProps = {
 };
 
 const ItemContainer = ({ children }: ItemContainerProps) => {
-    const { length, setActiveIndex } = useContext(CarouselContext) as CarouselContextType;
-    const [touchStartX, setTouchStartX] = useState<number>(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [xOffset, setXOffset] = useState(0);
-    const [containerWidth, setContainerWidth] = useState(0);
-    const [maxWidth, setMaxWidth] = useState(0);
-    const container = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (container.current) {
-            setContainerWidth(container.current.clientWidth);
-            setMaxWidth(container.current.clientWidth * (length - 1));
-        }
-    }, [container, length]);
-
-    const touchStartHandler = (e: TouchEvent<HTMLDivElement>) => {
-        setIsDragging(true);
-
-        const xStart = e.touches[0].clientX;
-        setTouchStartX(xStart);
-    };
-
-    const touchMoveHandler = (e: TouchEvent<HTMLDivElement>) => {
-        if (!isDragging) return;
-
-        const x = e.touches[0].clientX;
-        const deltaX = touchStartX - x;
-        const newOffset = xOffset - deltaX;
-        if (newOffset > 0) return;
-        if (newOffset < -maxWidth) return;
-
-        setXOffset(newOffset);
-        setTouchStartX(x);
-    };
-
-    const touchEndHandler = () => {
-        setIsDragging(false);
-        const positiveXOffset = -xOffset;
-        const half = containerWidth / 2;
-        const newIndex = Math.ceil((positiveXOffset - containerWidth + half) / containerWidth);
-        setXOffset(newIndex * -1 * containerWidth);
-        setActiveIndex(newIndex);
-    };
-
-    return (
-        <div className="overflow-hidden" ref={container}>
-            <div
-                className="whitespace-nowrap"
-                style={{
-                    transition: 'transform 0.3s',
-                    transform: `translateX(${xOffset}px)`,
-                }}
-                onTouchStart={touchStartHandler}
-                onTouchMove={touchMoveHandler}
-                onTouchEnd={touchEndHandler}
-            >
-                {children}
-            </div>
-        </div>
-    );
+    return <div className="flex overflow-auto w-full snap-mandatory snap-x hide-scroll">{children}</div>;
 };
 
 type ItemProps = {
     children: JSX.Element | JSX.Element[];
+    index: number;
 };
 
-const Item = ({ children }: ItemProps) => {
-    const { addItem, deleteItem } = useContext(CarouselContext) as CarouselContextType;
+const Item = ({ children, index }: ItemProps) => {
+    const { addItem, deleteItem, setActiveIndex, setHalfActiveIndex } = useContext(
+        CarouselContext,
+    ) as CarouselContextType;
+    const targetRef = useRef(null);
+
+    useEffect(() => {
+        const fullActiveOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 1.0, // Fully visible
+        };
+
+        const halfActiveOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5, // Fully visible
+        };
+
+        const fullObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setActiveIndex(index);
+                }
+            });
+        }, fullActiveOptions);
+
+        const halfObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setHalfActiveIndex(index);
+                }
+            });
+        }, halfActiveOptions);
+
+        if (targetRef.current) {
+            fullObserver.observe(targetRef.current);
+            halfObserver.observe(targetRef.current);
+        }
+
+        return () => {
+            if (targetRef.current) {
+                fullObserver.unobserve(targetRef.current);
+                halfObserver.unobserve(targetRef.current);
+            }
+        };
+    }, []);
+
     useEffect(() => {
         addItem();
         return () => {
@@ -122,7 +118,11 @@ const Item = ({ children }: ItemProps) => {
         };
     }, []);
 
-    return <div className="inline-flex items-center justify-center w-full">{children}</div>;
+    return (
+        <div className="inline-flex items-center justify-center w-full flex-none snap-center" ref={targetRef}>
+            {children}
+        </div>
+    );
 };
 
 type PaginationProps = {

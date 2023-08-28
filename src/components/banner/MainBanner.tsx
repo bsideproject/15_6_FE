@@ -1,15 +1,18 @@
 import { ReactComponent as Eyes } from '@/assets/img/icn_eyes.svg';
 import Carousel from '@/components/carousel/Carousel';
-import { useState, MouseEventHandler } from 'react';
+import { useState, MouseEventHandler, useEffect } from 'react';
+
+export type NotToDoBannerItemProps = {
+    id: number;
+    title: string;
+    description: string;
+    totalDate: number;
+    success: number;
+};
 
 type BannerItemProps = {
     isOddIndex: boolean;
-    info: {
-        title: string;
-        description: string;
-        totalDate: number;
-        success: number;
-    };
+    info: NotToDoBannerItemProps;
     clickHandler: MouseEventHandler<HTMLDivElement>;
 };
 
@@ -38,42 +41,20 @@ export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) 
     );
 };
 
-export const MainBanner = () => {
+type MainBannerProps = {
+    onChange: (index: number) => void;
+    banners: Array<NotToDoBannerItemProps>;
+};
+
+export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
     const [bulletColor, setBulletColor] = useState('');
     const [activeBulletColor, setActiveBulletColor] = useState('');
 
-    const banners = [
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 1,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 2,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 3,
-        },
-        {
-            title: '7시 이후 무조건 야식 참기 🔥',
-            description: '발리여행 전까지 체지방 2kg 감량',
-            totalDate: 51,
-            success: 23,
-            id: 4,
-        },
-    ];
+    useEffect(() => {
+        onChange(banners[0].id);
+    }, []);
 
-    const onActiveItemChange = (index: number) => {
+    const setPaginationBulletStyle = (index: number) => {
         if (index % 2 === 0) {
             setBulletColor('bg-gray-900/30');
             setActiveBulletColor('bg-gray-900');
@@ -83,6 +64,14 @@ export const MainBanner = () => {
         }
     };
 
+    const onActiveItemChange = (index: number) => {
+        onChange(index);
+    };
+
+    const onHalfActiveItemChange = (index: number) => {
+        setPaginationBulletStyle(index);
+    };
+
     const onClickBanner = (index: number) => {
         console.log(banners[index], index);
     };
@@ -90,10 +79,10 @@ export const MainBanner = () => {
     const defaultBulletClass = 'mx-1 inline-block w-2 h-2 rounded-full ';
 
     return (
-        <Carousel onActive={onActiveItemChange}>
+        <Carousel onActive={onActiveItemChange} onHalfActive={onHalfActiveItemChange}>
             <Carousel.ItemContainer>
                 {banners.map((info, index) => (
-                    <Carousel.Item key={info.id}>
+                    <Carousel.Item key={info.id} index={index}>
                         <BannerItem
                             info={info}
                             isOddIndex={index % 2 !== 0}
@@ -102,11 +91,15 @@ export const MainBanner = () => {
                     </Carousel.Item>
                 ))}
             </Carousel.ItemContainer>
-            <Carousel.Pagination
-                wrapperClass="w-full inline-flex absolute top-5 justify-center"
-                bulletClass={defaultBulletClass + bulletColor}
-                activeBulletClass={defaultBulletClass + activeBulletColor}
-            />
+            <>
+                {banners.length > 1 && (
+                    <Carousel.Pagination
+                        wrapperClass="w-full inline-flex absolute top-5 justify-center"
+                        bulletClass={defaultBulletClass + bulletColor}
+                        activeBulletClass={defaultBulletClass + activeBulletColor}
+                    />
+                )}
+            </>
         </Carousel>
     );
 };
