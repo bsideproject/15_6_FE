@@ -19,7 +19,9 @@ type BannerItemProps = {
 export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) => {
     return (
         <div
-            className={`flex flex-col items-center w-full ${isOddIndex ? 'bg-gray-900' : 'bg-primary'}`}
+            className={`flex flex-col justify-center items-center w-full h-full ${
+                isOddIndex ? 'bg-gray-900' : 'bg-primary'
+            }`}
             onClick={clickHandler}
         >
             <div className={`flex flex-col items-center mt-20  ${isOddIndex ? 'text-gray-0' : 'text-gray-900'}`}>
@@ -59,22 +61,22 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
             setBulletColor('bg-gray-900/30');
             setActiveBulletColor('bg-gray-900');
         } else {
-            setBulletColor('bg-[#FFD12B]/30');
-            setActiveBulletColor('bg-[#FFD12B]');
+            setBulletColor('bg-primary/30');
+            setActiveBulletColor('bg-primary');
         }
     };
 
     const onActiveItemChange = (index: number) => {
-        onChange(index);
+        onChange(banners[index].id);
     };
 
     const onHalfActiveItemChange = (index: number) => {
         setPaginationBulletStyle(index);
     };
 
-    const onClickBanner = (index: number) => {
-        console.log(banners[index], index);
-    };
+    // const onClickBanner = (index: number) => {
+    //     console.log(banners[index], index);
+    // };
 
     const defaultBulletClass = 'mx-1 inline-block w-2 h-2 rounded-full ';
 
@@ -83,11 +85,7 @@ export const MainBanner = ({ banners, onChange }: MainBannerProps) => {
             <Carousel.ItemContainer>
                 {banners.map((info, index) => (
                     <Carousel.Item key={info.id} index={index}>
-                        <BannerItem
-                            info={info}
-                            isOddIndex={index % 2 !== 0}
-                            clickHandler={() => onClickBanner(index)}
-                        />
+                        <BannerItem info={info} isOddIndex={index % 2 !== 0} clickHandler={() => null} />
                     </Carousel.Item>
                 ))}
             </Carousel.ItemContainer>
