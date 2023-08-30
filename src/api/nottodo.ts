@@ -1,33 +1,17 @@
 import { get, post, put, deleteApi } from './core';
-import { nottodoProps } from '@/recoil/nottodo/atom';
+import { nottodoProps, nottodoPostProps } from '@/recoil/nottodo/atom';
 
 export type orderBy = 'in_close' | 'in_distant';
-export type NotToDoType = {
-    notToDoId: number;
-    notToDoText: string;
-    goal: string;
-    progressState: string;
-    startDate: string;
-    endDate: string;
-    useYn: string;
-    cheerUpMessageList: {
-        userId: number;
-        cheerUpMsgId: number;
-        content: string;
-        useYn: string;
-        dspOrder: number;
-    }[];
-};
-export const getNottodoList = async (orderby?: orderBy): Promise<NotToDoType[]> => {
+export const getNottodoList = async (orderby?: orderBy): Promise<nottodoProps[]> => {
     const params = orderby ? `?orderBy=${orderby}` : '';
     return await get('/nottodo/list' + params);
 };
 
-export const createNottodo = async (params: nottodoProps) => {
+export const createNottodo = async (params: nottodoPostProps) => {
     return await post('/nottodo', params);
 };
 
-export const editNottodo = async (nottodoId: string, params: nottodoProps) => {
+export const editNottodo = async (nottodoId: string, params: nottodoPostProps) => {
     return await put(`/nottodo/${nottodoId}`, params);
 };
 

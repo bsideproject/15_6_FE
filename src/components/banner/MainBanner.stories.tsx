@@ -5,14 +5,7 @@ const meta: Meta<typeof MainBanner> = {
     title: 'NotToDo/Components/MainBanner',
     component: MainBanner,
     tags: ['autodocs'],
-    argTypes: {
-        variant: {
-            description: '버튼 타입',
-        },
-        disabled: {
-            description: '버튼 활성화 여부',
-        },
-    },
+    argTypes: {},
     decorators: [
         (Story) => (
             <div style={{ width: '400px', height: '600px', border: '1px solid black', position: 'relative' }}>
@@ -25,5 +18,5 @@ const meta: Meta<typeof MainBanner> = {
 export default meta;
 
 export const Primary = {
-    render: () => <MainBanner></MainBanner>,
+    render: () => <MainBanner onChange={() => null} banners={[]}></MainBanner>,
 };

@@ -14,12 +14,12 @@ import { ReactComponent as ArrowDown } from '@/assets/img/icn_arrow_down.svg';
 import { ReactComponent as Radio } from '@/assets/img/icn_radio.svg';
 import { ReactComponent as RadioActive } from '@/assets/img/icn_radio_active.svg';
 import { useRecoilState } from 'recoil';
-import { currentNottodoState, nottodoWithIdProps, progressState } from '@/recoil/nottodo/atom';
+import { currentNottodoState, nottodoProps, progressState } from '@/recoil/nottodo/atom';
 
 export default function NotTodoPage() {
     const router = useNavigate();
-    const [nottodoList, setNottodoList] = useState<nottodoWithIdProps[]>([]);
-    const [currentNottodo, setCurrentNottodo] = useRecoilState<nottodoWithIdProps | null>(currentNottodoState);
+    const [nottodoList, setNottodoList] = useState<nottodoProps[]>([]);
+    const [currentNottodo, setCurrentNottodo] = useRecoilState<nottodoProps | null>(currentNottodoState);
     const [isDesc, setIsDesc] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
@@ -61,7 +61,7 @@ export default function NotTodoPage() {
 
     const handleDelete = () => {
         if (currentNottodo) {
-            deleteNottodo(currentNottodo?.notToDoId).then(() => {
+            deleteNottodo(currentNottodo?.notToDoId.toString()).then(() => {
                 toast('낫투두 삭제가 완료되었어요.');
                 getNottodos(isDesc ? 'in_close' : 'in_distant');
                 setCurrentNottodo(null);
@@ -69,7 +69,7 @@ export default function NotTodoPage() {
         }
     };
 
-    const handleOpenMenu = (nottodo: nottodoWithIdProps) => {
+    const handleOpenMenu = (nottodo: nottodoProps) => {
         setCurrentNottodo(nottodo);
         setIsMenuOpen(true);
     };

@@ -55,7 +55,7 @@ type ItemContainerProps = {
 };
 
 const ItemContainer = ({ children }: ItemContainerProps) => {
-    return <div className="flex overflow-auto w-full snap-mandatory snap-x hide-scroll">{children}</div>;
+    return <div className="flex overflow-auto w-full h-[275px] snap-mandatory snap-x hide-scroll">{children}</div>;
 };
 
 type ItemProps = {
