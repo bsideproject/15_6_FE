@@ -22,15 +22,16 @@ export const Primary = {
             onActive={(index) => {
                 console.log('active', index);
             }}
+            onHalfActive={() => null}
         >
             <Carousel.ItemContainer>
-                <Carousel.Item>
+                <Carousel.Item index={0}>
                     <div className="inline-flex w-full h-[200px] bg-gray-300 items-center justify-center">Page 1</div>
                 </Carousel.Item>
-                <Carousel.Item>
+                <Carousel.Item index={1}>
                     <div className="inline-flex w-full h-[200px] bg-gray-300 items-center justify-center">Page 2</div>
                 </Carousel.Item>
-                <Carousel.Item>
+                <Carousel.Item index={2}>
                     <div className="inline-flex w-full h-[200px] bg-gray-300 items-center justify-center">Page 3</div>
                 </Carousel.Item>
             </Carousel.ItemContainer>
