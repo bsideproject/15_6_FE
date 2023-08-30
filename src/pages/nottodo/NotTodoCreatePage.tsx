@@ -39,9 +39,9 @@ export default function NotTodoCreatePage() {
                 setStartDate(new Date(currentNottodo.startDate));
                 setEndDate(new Date(currentNottodo.endDate));
                 setGoal(currentNottodo.goal ?? '');
-                setMessage1(currentNottodo.cheerUpMsg1 ?? '');
-                setMessage2(currentNottodo.cheerUpMsg2 ?? '');
-                setMessage3(currentNottodo.cheerUpMsg3 ?? '');
+                setMessage1(currentNottodo.cheerUpMessageList[0]?.content ?? '');
+                setMessage2(currentNottodo.cheerUpMessageList[1]?.content ?? '');
+                setMessage3(currentNottodo.cheerUpMessageList[2]?.content ?? '');
             }
         }
     }, []);

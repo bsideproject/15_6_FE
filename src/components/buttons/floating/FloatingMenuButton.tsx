@@ -27,7 +27,7 @@ export const FloatingMenuButton = (props: FloatingMenuButtonProps) => {
                 } bg-gray-900/70 w-full h-full fixed left-0 top-0 z-40`}
                 onClick={() => setIsOpen(false)}
             />
-            <div className="absolute flex flex-col right-[20px] bottom-[76px] z-50">{children}</div>
+            <div className="fixed flex flex-col right-[20px] bottom-[76px] z-50">{children}</div>
         </FloatingContext.Provider>
     );
 };
