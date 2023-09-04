@@ -1,24 +1,17 @@
 import { ReactComponent as LockIcon } from '@/assets/img/icn_lock.svg';
 import BadgeCount from './BadgeCount';
-
-type Badge = {
-    imgSrc: string;
-    name: string;
-    key: number;
-    count: number;
-    locked: boolean;
-};
+import type { badge } from '@/api/badge';
 
 type BadgeListProps = {
-    badgeList: Badge[];
-    clickHandler: (key: number) => void;
+    badgeList: badge[];
+    clickHandler: (id: string, badgeList: badge[]) => void;
 };
 
 const BadgeList = ({ badgeList, clickHandler }: BadgeListProps) => {
     return (
         <ul className="mt-5 mb-10 grid gap-x-3 gap-y-10 justify-center grid-cols-auto-fill">
             {badgeList.map((badge) => (
-                <li className="flex-none" key={badge.key} onClick={() => clickHandler(badge.key)}>
+                <li className="flex-none" key={badge.badgeId} onClick={() => clickHandler(badge.badgeId, badgeList)}>
                     <BadgeItem badge={badge} />
                 </li>
             ))}
@@ -26,23 +19,25 @@ const BadgeList = ({ badgeList, clickHandler }: BadgeListProps) => {
     );
 };
 
-type BadgeItemProps = {
-    badge: Badge;
-};
-
-const BadgeItem = ({ badge }: BadgeItemProps) => {
+const BadgeItem = ({ badge }: { badge: badge }) => {
+    const isLock = badge.gainYn === 'N';
     return (
         <div className="flex flex-col justify-center items-center ">
             <div className="relative">
-                <img className={`${badge.locked ? 'grayscale' : ''} object-none`} src={badge.imgSrc} />
-                {badge.locked && (
+                <div className="w-[100px] h-[100px]">
+                    <img
+                        className={`${isLock ? 'grayscale' : ''} object-contain w-full h-full`}
+                        src={import.meta.env.VITE_STORAGE_URL + badge.badgeId + '.png'}
+                    />
+                </div>
+                {isLock && (
                     <div className="w-full h-full absolute bg-white/90 top-0 flex justify-center items-center">
                         <LockIcon />
                     </div>
                 )}
-                {badge.count > 1 && <BadgeCount count={badge.count} />}
+                {badge.badgeCnt > 1 && <BadgeCount count={badge.badgeCnt} />}
             </div>
-            <span className={`${badge.locked ? 'text-gray-300' : 'text-gray-900'} mt-[11px]`}>{badge.name}</span>
+            <span className={`${isLock ? 'text-gray-300' : 'text-gray-900'} mt-[11px]`}>{badge.badgeName}</span>
         </div>
     );
 };
