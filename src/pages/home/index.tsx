@@ -46,7 +46,7 @@ export default function HomePage() {
 
     useEffect(() => {
         fetchModerationList();
-    }, [isWeekMode, currentDate]);
+    }, [currentDate]);
 
     useEffect(() => {
         fetchSelecteDateModerationList();

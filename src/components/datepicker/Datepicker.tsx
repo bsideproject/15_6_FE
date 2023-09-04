@@ -48,8 +48,8 @@ export const DatePicker = (props: DatePickerProps) => {
     const [arrowState, setArrowState] = useState<'left' | 'right' | null>(null);
 
     useEffect(() => {
-        const { year, month, week } = getWeekOfMonth(currentDate);
         if (isWeek) {
+            const { year, month, week } = getWeekOfMonth(currentDate);
             setCurrentWeek(week);
             setCurrentYear(year);
             setCurrentMonth(month);
@@ -58,21 +58,34 @@ export const DatePicker = (props: DatePickerProps) => {
     }, [currentDate]);
 
     useEffect(() => {
-        if (!isWeek) setDayList(getMonthDayList(currentYear, currentMonth));
-    }, [currentYear, currentMonth]);
-
-    useEffect(() => {
         if (onCurrentDateChange) {
             onCurrentDateChange(currentDate);
         }
     }, [currentDate]);
 
     useEffect(() => {
+        if (!isWeek) setDayList(getMonthDayList(currentYear, currentMonth));
+    }, [currentYear, currentMonth]);
+
+    useEffect(() => {
         if (isWeek) {
-            setCurrentWeekValue(selected);
-            setDayList(getWeekDayList(selected));
+            const tempDate = new Date(currentDate);
+            const firstDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
+            const isFirstWeek = firstDate.getDay() < 4;
+            if (isFirstWeek) {
+                setDayList(getWeekDayList(firstDate));
+                setCurrentWeekValue(firstDate);
+                setCurrentDate(firstDate);
+            } else {
+                const newDate = new Date(firstDate.setDate(firstDate.getDate() + 7 - firstDate.getDay()));
+                setDayList(getWeekDayList(newDate));
+                setCurrentWeekValue(newDate);
+                setCurrentDate(newDate);
+            }
         } else {
-            setDayList(getMonthDayList(selected.getFullYear(), selected.getMonth() + 1));
+            const newDate = new Date(currentYear, currentDate.getMonth(), currentDate.getDate());
+            setDayList(getMonthDayList(currentYear, currentMonth));
+            setCurrentDate(newDate);
         }
     }, [isWeek]);
 
