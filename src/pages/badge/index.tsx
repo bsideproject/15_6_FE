@@ -1,29 +1,40 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BadgeList from './components/BadgeList';
-import exampleImg from '@/assets/img/badge_example.png';
+import { getBadges, badge } from '@/api/badge';
 
 export default function BadgePage() {
     const navigate = useNavigate();
+    const [badges, setBadges] = useState<badge[]>([]);
 
-    const fakeBadgeList = Array.from({ length: 20 }).map((_, idx) => ({
-        name: '완벽한 출발',
-        imgSrc: exampleImg,
-        key: idx,
-        locked: idx % 2 ? true : false,
-        count: 3,
-    }));
+    useEffect(() => {
+        getBadgeList();
+    }, []);
 
-    const routeToBadgeDetail = (key: number) => {
-        const badge = fakeBadgeList.find((badge) => badge.key === key);
+    const getBadgeList = async () => {
+        const result = await getBadges();
+        setBadges(result);
+    };
 
-        if (!badge?.locked) {
-            navigate(`/badge/${key}`);
+    const routeToBadgeDetail = (id: string, badgeList: badge[]) => {
+        const badge = badgeList.find((badge) => badge.badgeId === id);
+
+        if (badge && badge.badgeCnt > 0) {
+            navigate(`/badge/${badge.badgeId}`, {
+                state: {
+                    name: badge.badgeName,
+                    count: badge.badgeCnt,
+                    dates: badge.gainDate,
+                    explanation: badge.explanation,
+                    imgUrl: import.meta.env.VITE_STORAGE_URL + badge.badgeId + '.png',
+                },
+            });
         }
     };
 
     return (
         <div>
-            <BadgeList badgeList={fakeBadgeList} clickHandler={routeToBadgeDetail} />
+            <BadgeList badgeList={badges} clickHandler={routeToBadgeDetail} />
         </div>
     );
 }

@@ -1,29 +1,26 @@
-import { useLoaderData } from 'react-router-dom';
-import exampleImg from '@/assets/img/badge_example_big.png';
 import BadgeCount from './components/BadgeCount';
-
-type BadgeInfo = {
-    count: number;
-    description: string;
-    acquiredAt: string[];
-};
+import { useLocation } from 'react-router-dom';
+import { badgeDate } from '@/api/badge';
+import { parsingDotDate } from '@/utils/date';
 
 export default function BadgeDetail() {
-    const badgeInfo = useLoaderData() as BadgeInfo;
-
+    const props = useLocation().state;
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center gap-9">
             <div className="relative">
-                <img src={exampleImg} />
-                <BadgeCount count={badgeInfo.count} />
+                <div className="w-[200px] h-[200px]">
+                    <img src={props.imgUrl} className="w-full h-full object-contain" />
+                </div>
+                <BadgeCount count={props.count ?? 0} />
             </div>
             <div className="flex flex-col items-center">
-                <span className="text-gray-900 font-bold text-base mb-2">{badgeInfo.description}</span>
-                {badgeInfo.acquiredAt.map((acquired, idx) => (
-                    <span key={idx} className="text-base text-gray-600">
-                        획득일: {acquired}
-                    </span>
-                ))}
+                <span className="text-gray-900 font-bold text-base mb-2">{props.name}</span>
+                {props &&
+                    props.dates.map((date: badgeDate, idx: number) => (
+                        <div key={idx} className="text-base text-gray-600">
+                            획득일: {parsingDotDate(date.regDtm)}
+                        </div>
+                    ))}
             </div>
         </div>
     );
