@@ -58,15 +58,6 @@ export const router = createBrowserRouter([
                     {
                         path: ':badgeId',
                         element: <BadgeDetail />,
-                        loader: ({ params }) => {
-                            return {
-                                key: params.badgeId,
-                                name: '뱃지명',
-                                description: '뱃지 설명',
-                                count: 3,
-                                acquiredAt: ['2023.07.14', '2023.07.15'],
-                            };
-                        },
                     },
                 ],
             },
