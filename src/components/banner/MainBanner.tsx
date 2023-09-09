@@ -1,6 +1,7 @@
 import { ReactComponent as Eyes } from '@/assets/img/icn_eyes.svg';
 import Carousel from '@/components/carousel/Carousel';
 import { useState, MouseEventHandler, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export type NotToDoBannerItemProps = {
     id: number;
@@ -17,6 +18,12 @@ type BannerItemProps = {
 };
 
 export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) => {
+    const isGoal = info.description && info.description !== '';
+    const navigation = useNavigate();
+
+    const handleMoveEditPage = () => {
+        return !isGoal ? navigation(`/nottodo/edit/${info.id}`) : null;
+    };
     return (
         <div
             className={`flex flex-col justify-center items-center w-full h-full ${
@@ -24,9 +31,12 @@ export const BannerItem = ({ isOddIndex, info, clickHandler }: BannerItemProps) 
             }`}
             onClick={clickHandler}
         >
-            <div className={`flex flex-col items-center mt-20  ${isOddIndex ? 'text-gray-0' : 'text-gray-900'}`}>
+            <div
+                className={`flex flex-col items-center mt-20  ${isOddIndex ? 'text-gray-0' : 'text-gray-900'}`}
+                onClick={handleMoveEditPage}
+            >
                 <p className="text-2xl font-bold">{info.title}</p>
-                <p className="text-base">{info.description}</p>
+                <p className="text-base">{isGoal ? info.description : '최종 목표를 입력해주세요'}</p>
             </div>
             <div
                 className={`rounded border-[1px] border-gray-900 relative px-3 py-1 mt-10 mb-[60px] ${
