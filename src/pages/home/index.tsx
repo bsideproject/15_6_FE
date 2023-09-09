@@ -90,10 +90,11 @@ export default function HomePage() {
                 .filter((item) => item.progressState === 'IN_PROGRESS')
                 .map((item) => ({
                     id: item.notToDoId,
-                    title: item.goal,
-                    description: item.notToDoText,
-                    totalDate: diffDay(item.endDate, item.startDate),
-                    success: diffDay(new Date(), item.startDate),
+                    title: item.notToDoText,
+                    description: item.goal,
+                    // TODO 성공일자 날짜 계산 해야함
+                    success: diffDay(item.endDate, item.startDate),
+                    totalDate: diffDay(new Date(), item.startDate),
                 })),
         );
     };
