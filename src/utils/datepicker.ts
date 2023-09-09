@@ -137,7 +137,7 @@ export const diffDay = (startDate: Date | string, endDate: Date | string) => {
     const diffInMilliseconds = Math.abs(end - start);
     const diffInDays = Math.ceil(diffInMilliseconds / oneDay);
 
-    return diffInDays + 1;
+    return diffInDays;
 };
 
 export const dateToyyyymmdd = (date: Date, separator: '-' | '/' | '' = '') => {
