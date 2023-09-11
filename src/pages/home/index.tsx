@@ -122,7 +122,8 @@ export default function HomePage() {
 
     const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
-        if (e.target.value.length > 4) {
+        if (e.target.value.length >= 4) {
+            console.log('warnnig false');
             setInputWarning(false);
         }
     };
@@ -138,6 +139,7 @@ export default function HomePage() {
     const handleSubmitRecord = async () => {
         if (inputValue.length < 4) {
             setInputWarning(true);
+            return;
         }
         if (isModify && selectedModeration) {
             await putModeration(selectedModeration.moderationId, {
@@ -207,6 +209,11 @@ export default function HomePage() {
         setCurrentDate(date);
     };
 
+    const handleOpenConfirm = () => {
+        setIsOpenConfirm(true);
+        setInputWarning(false);
+    };
+
     if (formattedNotToDoList.length === 0) {
         return <NoNotToDos />;
     }
@@ -238,7 +245,7 @@ export default function HomePage() {
                     </>
                 )}
                 <BottomPopup isOpen={isOpenCreatePopup} setIsOpen={setIsOpenCreatePopup}>
-                    <div className="w-full h-auto flex justify-end mb-6" onClick={() => setIsOpenConfirm(true)}>
+                    <div className="w-full h-auto flex justify-end mb-6" onClick={handleOpenConfirm}>
                         <Plus className="rotate-45" fill="#A2A2A2" />
                     </div>
                     <div className="w-full h-12 rounded-lg flex bg-gray-50 relative">
