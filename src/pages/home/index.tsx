@@ -324,7 +324,7 @@ export default function HomePage() {
                         >
                             삭제
                         </button>
-                        {!isTwoHourPassing(selectedModeration?.regDtm ?? '') ? (
+                        {selectedModeration && !isTwoHourPassing(selectedModeration.regDtm) ? (
                             <button
                                 className="w-full h-[48px] title2 bg-gray-50 rounded-lg text-gray-900"
                                 onClick={handleOpenEdit}
