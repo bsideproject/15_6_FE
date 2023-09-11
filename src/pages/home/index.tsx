@@ -148,7 +148,6 @@ export default function HomePage() {
         const list = await getModerationList(dateToyyyymmdd(new Date(endDate)), dateToyyyymmdd(new Date(startDate)));
         if (list) {
             const statusList = handleStatusModeration(list.filter((item) => item.notToDoId === id));
-            console.log('success day', id, statusList);
             return Object.values(statusList).filter((status) => status === 'success').length;
         } else {
             return 0;
