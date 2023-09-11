@@ -29,3 +29,14 @@ export const parsingDotDate = (date: Date | string) => {
 
     return `${year}.${month}.${day}`;
 };
+
+export const isTwoHourPassing = (date: string) => {
+    const newDate = new Date(date).getTime();
+    if (isNaN(newDate)) {
+        throw new Error('Invalid date string');
+    }
+    const currentTime = new Date().getTime();
+    const twoHoursInMilliseconds = 2 * 60 * 60 * 1000;
+
+    return currentTime - newDate >= twoHoursInMilliseconds;
+};

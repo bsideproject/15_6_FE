@@ -222,7 +222,7 @@ export default function NotTodoCreatePage() {
                         필수
                     </div>
                     <div className="title1 ml-2">언제까지 도전하시나요?</div>
-                    <div className="title2 text-accent ml-auto">총 {diffDay(startDate, endDate)}일</div>
+                    <div className="title2 text-accent ml-auto">총 {diffDay(startDate, endDate) + 1}일</div>
                 </div>
                 <div className="w-full flex items-center">
                     <Input

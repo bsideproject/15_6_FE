@@ -36,12 +36,10 @@ export const ModerationListItem = ({ recordType, content, date, onClick }: Moder
     const time = dateToAmPmTimeFormat(date);
 
     return (
-        <li className="flex justify-between mb-3" onClick={onClick}>
-            <span className="flex">
-                <span className={`bg-${color} w-1.5 h-6 rounded-md mr-2`} />
-                <span className="text-base">{content}</span>
-            </span>
-            <span className="text-sm leading-6 text-gray-500">{time}</span>
+        <li className="flex mb-3 w-full" onClick={onClick}>
+            <span className={`bg-${color} w-1.5 min-w-[0.375rem] h-6 rounded-md mr-2`} />
+            <span className="block truncate text-base">{content}</span>
+            <span className="ml-auto text-sm leading-6 text-gray-500 whitespace-nowrap">{time}</span>
         </li>
     );
 };

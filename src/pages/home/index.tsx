@@ -18,7 +18,13 @@ import { useNavigate } from 'react-router-dom';
 import { deleteModeration, getModerationList, ModerationType, postModeration, putModeration } from '@/api/moderation';
 
 import { ModerationList } from './components/moderationList';
-import { dateToAmPmTimeFormat, getFirstDateOfMonth, getLastDateOfMonth, isSameDate } from '@/utils/date';
+import {
+    dateToAmPmTimeFormat,
+    getFirstDateOfMonth,
+    getLastDateOfMonth,
+    isSameDate,
+    isTwoHourPassing,
+} from '@/utils/date';
 
 export default function HomePage() {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -90,10 +96,11 @@ export default function HomePage() {
                 .filter((item) => item.progressState === 'IN_PROGRESS')
                 .map((item) => ({
                     id: item.notToDoId,
-                    title: item.goal,
-                    description: item.notToDoText,
-                    totalDate: diffDay(item.endDate, item.startDate),
-                    success: diffDay(new Date(), item.startDate),
+                    title: item.notToDoText,
+                    description: item.goal,
+                    // TODO 성공일자 날짜 계산 해야함
+                    success: diffDay(item.endDate, item.startDate),
+                    totalDate: diffDay(new Date(), item.startDate),
                 })),
         );
     };
@@ -121,7 +128,8 @@ export default function HomePage() {
 
     const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
-        if (e.target.value.length > 4) {
+        if (e.target.value.length >= 4) {
+            console.log('warnnig false');
             setInputWarning(false);
         }
     };
@@ -137,6 +145,7 @@ export default function HomePage() {
     const handleSubmitRecord = async () => {
         if (inputValue.length < 4) {
             setInputWarning(true);
+            return;
         }
         if (isModify && selectedModeration) {
             await putModeration(selectedModeration.moderationId, {
@@ -206,6 +215,11 @@ export default function HomePage() {
         setCurrentDate(date);
     };
 
+    const handleOpenConfirm = () => {
+        setIsOpenConfirm(true);
+        setInputWarning(false);
+    };
+
     if (formattedNotToDoList.length === 0) {
         return <NoNotToDos />;
     }
@@ -237,7 +251,7 @@ export default function HomePage() {
                     </>
                 )}
                 <BottomPopup isOpen={isOpenCreatePopup} setIsOpen={setIsOpenCreatePopup}>
-                    <div className="w-full h-auto flex justify-end mb-6" onClick={() => setIsOpenConfirm(true)}>
+                    <div className="w-full h-auto flex justify-end mb-6" onClick={handleOpenConfirm}>
                         <Plus className="rotate-45" fill="#A2A2A2" />
                     </div>
                     <div className="w-full h-12 rounded-lg flex bg-gray-50 relative">
@@ -310,12 +324,14 @@ export default function HomePage() {
                         >
                             삭제
                         </button>
-                        <button
-                            className="w-full h-[48px] title2 bg-gray-50 rounded-lg text-gray-900"
-                            onClick={handleOpenEdit}
-                        >
-                            수정
-                        </button>
+                        {selectedModeration && !isTwoHourPassing(selectedModeration.regDtm) ? (
+                            <button
+                                className="w-full h-[48px] title2 bg-gray-50 rounded-lg text-gray-900"
+                                onClick={handleOpenEdit}
+                            >
+                                수정
+                            </button>
+                        ) : null}
                     </div>
                 </BottomPopup>
                 <ConfirmPopup
