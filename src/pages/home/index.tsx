@@ -59,6 +59,10 @@ export default function HomePage() {
     }, [selectedDate]);
 
     useEffect(() => {
+        setMarkerDateObj(handleStatusModeration(moderations));
+    }, [moderations]);
+
+    const handleStatusModeration = (moderations: ModerationType[]) => {
         const obj = moderations.reduce((acc, moderation) => {
             const dateString = dateToyyyymmdd(new Date(moderation.regDtm), '-');
             acc[dateString] = acc[dateString] || [];
@@ -86,23 +90,22 @@ export default function HomePage() {
             return acc;
         }, {} as MarkerDate);
 
-        setMarkerDateObj(markerObject);
-    }, [moderations]);
+        return markerObject;
+    };
 
     const fetchNotToDos = async () => {
         const data = await getNottodoList('in_close');
-        setFormattedNotToDoList(
-            data
-                .filter((item) => item.progressState === 'IN_PROGRESS')
-                .map((item) => ({
-                    id: item.notToDoId,
-                    title: item.notToDoText,
-                    description: item.goal,
-                    // TODO 성공일자 날짜 계산 해야함
-                    success: diffDay(item.endDate, item.startDate),
-                    totalDate: diffDay(new Date(), item.startDate),
-                })),
-        );
+        const formatDataPromise = data
+            .filter((item) => item.progressState === 'IN_PROGRESS')
+            .map(async (item) => ({
+                id: item.notToDoId,
+                title: item.notToDoText,
+                description: item.goal,
+                success: await getSuccessDay(item.notToDoId, item.endDate, item.startDate),
+                totalDate: diffDay(new Date(), item.startDate),
+            }));
+        const formatData = await Promise.all(formatDataPromise);
+        setFormattedNotToDoList(formatData);
     };
 
     const fetchModerationList = async () => {
@@ -129,7 +132,6 @@ export default function HomePage() {
     const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
         if (e.target.value.length >= 4) {
-            console.log('warnnig false');
             setInputWarning(false);
         }
     };
@@ -140,6 +142,16 @@ export default function HomePage() {
         setIsSuccess(success);
         setIsModify(false);
         setInputValue('');
+    };
+
+    const getSuccessDay = async (id: number, startDate: string, endDate: string) => {
+        const list = await getModerationList(dateToyyyymmdd(new Date(endDate)), dateToyyyymmdd(new Date(startDate)));
+        if (list) {
+            const statusList = handleStatusModeration(list.filter((item) => item.notToDoId === id));
+            return Object.values(statusList).filter((status) => status === 'success').length;
+        } else {
+            return 0;
+        }
     };
 
     const handleSubmitRecord = async () => {
