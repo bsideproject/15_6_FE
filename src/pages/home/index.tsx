@@ -18,7 +18,13 @@ import { useNavigate } from 'react-router-dom';
 import { deleteModeration, getModerationList, ModerationType, postModeration, putModeration } from '@/api/moderation';
 
 import { ModerationList } from './components/moderationList';
-import { dateToAmPmTimeFormat, getFirstDateOfMonth, getLastDateOfMonth, isSameDate } from '@/utils/date';
+import {
+    dateToAmPmTimeFormat,
+    getFirstDateOfMonth,
+    getLastDateOfMonth,
+    isSameDate,
+    isTwoHourPassing,
+} from '@/utils/date';
 
 export default function HomePage() {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -318,12 +324,14 @@ export default function HomePage() {
                         >
                             삭제
                         </button>
-                        <button
-                            className="w-full h-[48px] title2 bg-gray-50 rounded-lg text-gray-900"
-                            onClick={handleOpenEdit}
-                        >
-                            수정
-                        </button>
+                        {!isTwoHourPassing(selectedModeration?.regDtm ?? '') ? (
+                            <button
+                                className="w-full h-[48px] title2 bg-gray-50 rounded-lg text-gray-900"
+                                onClick={handleOpenEdit}
+                            >
+                                수정
+                            </button>
+                        ) : null}
                     </div>
                 </BottomPopup>
                 <ConfirmPopup
