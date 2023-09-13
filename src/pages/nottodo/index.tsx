@@ -126,10 +126,17 @@ export default function NotTodoPage() {
                 <FloatingButton onClick={() => router('/nottodo/create')} />
             )}
             <BottomPopup isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-                <div className="body1 w-full" onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}>
-                    낫투두 수정
-                </div>
-                <div className="h-[24px]" />
+                {currentNottodo?.progressState !== 'COMPLETE' && (
+                    <>
+                        <div
+                            className="body1 w-full"
+                            onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}
+                        >
+                            낫투두 수정
+                        </div>
+                        <div className="h-[24px]" />
+                    </>
+                )}
                 <div className="body1 w-full text-negative" onClick={handleDeletePopupOpen}>
                     낫투두 삭제
                 </div>
