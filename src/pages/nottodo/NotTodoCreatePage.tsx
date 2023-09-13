@@ -7,7 +7,17 @@ import { diffDay, formatDateToString, dateToyyyymmdd } from '@/utils/datepicker'
 import { Toast } from '@/components/toast/Toast';
 import { createNottodo, editNottodo } from '@/api/nottodo';
 import { useRecoilValue } from 'recoil';
-import { currentNottodoState } from '@/recoil/nottodo/atom';
+import { currentNottodoState, nottodoProps } from '@/recoil/nottodo/atom';
+
+interface editPayload {
+    notToDoText: string;
+    startDate: string;
+    endDate: string;
+    goal: string;
+    cheerUpMsg1: string;
+    cheerUpMsg2: string;
+    cheerUpMsg3: string;
+}
 
 export default function NotTodoCreatePage() {
     const router = useNavigate();
@@ -188,10 +198,38 @@ export default function NotTodoCreatePage() {
         }
     };
 
+    const isEditing = (origin: nottodoProps | null, edit: editPayload) => {
+        if (origin) {
+            if (origin.notToDoText !== edit.notToDoText) return true;
+            if (origin.startDate !== edit.startDate) return true;
+            if (origin.endDate !== edit.endDate) return true;
+            if (origin.goal !== edit.goal) return true;
+            if (origin.cheerUpMessageList[0].content !== edit.cheerUpMsg1) return true;
+            if (origin.cheerUpMessageList[1].content !== edit.cheerUpMsg2) return true;
+            if (origin.cheerUpMessageList[2].content !== edit.cheerUpMsg3) return true;
+            return false;
+        } else {
+            return false;
+        }
+    };
+
     const renderButton = (isEdit: boolean) => {
         if (isEdit) {
+            const payload = {
+                notToDoText: title,
+                startDate: dateToyyyymmdd(startDate, '-'),
+                endDate: dateToyyyymmdd(endDate, '-'),
+                goal,
+                cheerUpMsg1: message1,
+                cheerUpMsg2: message2,
+                cheerUpMsg3: message3,
+            };
             return (
-                <BottomButton variant="secondary" clickHandler={handleEdit}>
+                <BottomButton
+                    variant="secondary"
+                    disabled={!isEditing(currentNottodo, payload)}
+                    clickHandler={handleEdit}
+                >
                     수정 완료
                 </BottomButton>
             );
