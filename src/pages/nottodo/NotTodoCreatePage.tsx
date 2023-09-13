@@ -12,11 +12,12 @@ import { currentNottodoState } from '@/recoil/nottodo/atom';
 export default function NotTodoCreatePage() {
     const router = useNavigate();
     const params = useParams();
+    const today = new Date();
     const endDateRef = useRef<HTMLInputElement>(null);
     const [title, setTitle] = useState<string>('');
     const [goal, setGoal] = useState<string>('');
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState<Date>(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+    const [endDate, setEndDate] = useState<Date>(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
     const [inputStartDate, setInputStartDate] = useState<string>('');
     const [inputEndDate, setInputEndDate] = useState<string>('');
     const [message1, setMessage1] = useState<string>('');
@@ -101,14 +102,20 @@ export default function NotTodoCreatePage() {
         // 시작일, 종료일 계산
         const startTime = startDate.getTime();
         const endTime = endDate.getTime();
+
         if (startTime > endTime) {
             setDateHelpText('시작일이 종료일보다 늦을 수 없습니다');
             return false;
         }
 
-        // 100일 초과 여부 검사
         const diff = endTime - startTime;
         const dayTime = 1000 * 60 * 60 * 24;
+        // 1일 미만인지 검사
+        if (diff < dayTime) {
+            setDateHelpText('도전일은 1일 이상이 되어야 합니다.');
+            return false;
+        }
+        // 100일 초과 여부 검사
         if (diff > dayTime * 100) {
             setDateHelpText('100일 이상은 등록하실 수 없습니다');
             return false;
@@ -222,7 +229,7 @@ export default function NotTodoCreatePage() {
                         필수
                     </div>
                     <div className="title1 ml-2">언제까지 도전하시나요?</div>
-                    <div className="title2 text-accent ml-auto">총 {diffDay(startDate, endDate) + 1}일</div>
+                    <div className="title2 text-accent ml-auto">총 {diffDay(startDate, endDate)}일</div>
                 </div>
                 <div className="w-full flex items-center">
                     <Input
