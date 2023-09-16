@@ -12,14 +12,21 @@ interface CardProps {
 }
 
 export const Card = (props: CardProps) => {
-    const { title, goal, openMenu, startDate, endDate, className } = props;
+    const { title, goal, openMenu, onClick, startDate, endDate, className } = props;
+
+    const handleOpenMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        if (openMenu) openMenu(event);
+    };
+
     return (
         <div
             className={`card w-full min-h-[128px] flex flex-col jusitfy-center px-[20px] py-[24px] bg-white ${className}`}
+            onClick={onClick}
         >
             <div className="flex justify-between mb-[8px]">
                 <Tag startDate={startDate} endDate={endDate} />
-                <div onClick={openMenu}>
+                <div onClick={handleOpenMenu}>
                     <More />
                 </div>
             </div>

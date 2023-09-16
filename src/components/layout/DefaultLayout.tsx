@@ -84,6 +84,9 @@ export default function DefaultLayout({ children }: DefaultLayoutProp) {
 
     const handleBack = () => {
         if (location.pathname.startsWith('/nottodo/edit')) {
+            const params = new URLSearchParams(location.search);
+            if (params.get('state') === 'complete') return router(-1);
+
             return setIsEditPopup(true);
         } else {
             return router(-1);
