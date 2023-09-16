@@ -7,7 +7,7 @@ import { Tabs } from '@/components/tab/Tabs';
 import { Tab } from '@/components/tab/Tab';
 import { BottomPopup } from '@/components/popup/BottomPopup';
 import { DeleteTitlePopup } from '@/components/popup/PopupGroup';
-import { Toast as toast } from '@/components/toast/Toast';
+import { Toast, Toast as toast } from '@/components/toast/Toast';
 import { deleteNottodo, getNottodoList, orderBy } from '@/api/nottodo';
 
 import { ReactComponent as ArrowDown } from '@/assets/img/icn_arrow_down.svg';
@@ -74,6 +74,15 @@ export default function NotTodoPage() {
         setIsMenuOpen(true);
     };
 
+    const handleClickCard = (nottodo: nottodoProps) => {
+        setCurrentNottodo(nottodo);
+        if (nottodo.progressState === 'COMPLETE') {
+            router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+        } else if (nottodo.progressState === 'BEFORE_START') {
+            Toast('도전일이 되면 열어볼 수 있어요');
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-[calc((100vh-60px)-56px)] bg-gray-50">
             <div className="sticky top-0">
@@ -105,15 +114,16 @@ export default function NotTodoPage() {
             </div>
             {nottodoList
                 .filter((v) => (progressState !== '' ? v.progressState === progressState : true))
-                .map((v, index) => (
+                .map((v) => (
                     <Card
-                        key={'card' + index}
+                        key={'card' + v.notToDoId}
                         className="mb-[8px]"
                         title={v.notToDoText}
                         startDate={new Date(v.startDate)}
                         endDate={new Date(v.endDate)}
                         goal={v.goal}
                         openMenu={() => handleOpenMenu(v)}
+                        onClick={() => handleClickCard(v)}
                     />
                 ))}
             {nottodoList.filter((v) => (progressState !== '' ? v.progressState === progressState : true)).length < 3 ? (
@@ -126,10 +136,17 @@ export default function NotTodoPage() {
                 <FloatingButton onClick={() => router('/nottodo/create')} />
             )}
             <BottomPopup isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-                <div className="body1 w-full" onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}>
-                    낫투두 수정
-                </div>
-                <div className="h-[24px]" />
+                {currentNottodo?.progressState !== 'COMPLETE' && (
+                    <>
+                        <div
+                            className="body1 w-full"
+                            onClick={() => router(`/nottodo/edit/${currentNottodo?.notToDoId}`)}
+                        >
+                            낫투두 수정
+                        </div>
+                        <div className="h-[24px]" />
+                    </>
+                )}
                 <div className="body1 w-full text-negative" onClick={handleDeletePopupOpen}>
                     낫투두 삭제
                 </div>
