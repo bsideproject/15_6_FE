@@ -7,7 +7,7 @@ import { Tabs } from '@/components/tab/Tabs';
 import { Tab } from '@/components/tab/Tab';
 import { BottomPopup } from '@/components/popup/BottomPopup';
 import { DeleteTitlePopup } from '@/components/popup/PopupGroup';
-import { Toast as toast } from '@/components/toast/Toast';
+import { Toast, Toast as toast } from '@/components/toast/Toast';
 import { deleteNottodo, getNottodoList, orderBy } from '@/api/nottodo';
 
 import { ReactComponent as ArrowDown } from '@/assets/img/icn_arrow_down.svg';
@@ -74,9 +74,13 @@ export default function NotTodoPage() {
         setIsMenuOpen(true);
     };
 
-    const handleMoveDetailPage = (nottodo: nottodoProps) => {
+    const handleClickCard = (nottodo: nottodoProps) => {
         setCurrentNottodo(nottodo);
-        router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+        if (nottodo.progressState === 'COMPLETE') {
+            router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+        } else if (nottodo.progressState === 'BEFORE_START') {
+            Toast('도전일이 되면 열어볼 수 있어요');
+        }
     };
 
     return (
@@ -119,7 +123,7 @@ export default function NotTodoPage() {
                         endDate={new Date(v.endDate)}
                         goal={v.goal}
                         openMenu={() => handleOpenMenu(v)}
-                        onClick={v.progressState === 'COMPLETE' ? () => handleMoveDetailPage(v) : () => null}
+                        onClick={() => handleClickCard(v)}
                     />
                 ))}
             {nottodoList.filter((v) => (progressState !== '' ? v.progressState === progressState : true)).length < 3 ? (
