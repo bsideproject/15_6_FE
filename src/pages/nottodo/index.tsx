@@ -74,9 +74,13 @@ export default function NotTodoPage() {
         setIsMenuOpen(true);
     };
 
-    const handleMoveDetailPage = (nottodo: nottodoProps) => {
+    const handleMoveEditPage = (nottodo: nottodoProps) => {
         setCurrentNottodo(nottodo);
-        router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+        if (nottodo.progressState === 'COMPLETE') {
+            router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+        } else if (nottodo.progressState === 'BEFORE_START') {
+            router(`/nottodo/edit/${nottodo.notToDoId}`);
+        }
     };
 
     return (
@@ -119,7 +123,7 @@ export default function NotTodoPage() {
                         endDate={new Date(v.endDate)}
                         goal={v.goal}
                         openMenu={() => handleOpenMenu(v)}
-                        onClick={v.progressState === 'COMPLETE' ? () => handleMoveDetailPage(v) : () => null}
+                        onClick={() => handleMoveEditPage(v)}
                     />
                 ))}
             {nottodoList.filter((v) => (progressState !== '' ? v.progressState === progressState : true)).length < 3 ? (
