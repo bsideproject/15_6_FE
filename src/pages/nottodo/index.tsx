@@ -110,9 +110,9 @@ export default function NotTodoPage() {
             </div>
             {nottodoList
                 .filter((v) => (progressState !== '' ? v.progressState === progressState : true))
-                .map((v, index) => (
+                .map((v) => (
                     <Card
-                        key={'card' + index}
+                        key={'card' + v.notToDoId}
                         className="mb-[8px]"
                         title={v.notToDoText}
                         startDate={new Date(v.startDate)}
