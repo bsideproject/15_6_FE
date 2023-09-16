@@ -19,6 +19,7 @@ export interface InputProps {
     rows?: number;
     maxLength?: number;
     isScroll?: boolean;
+    readOnly?: boolean;
 }
 export const Input = (props: InputProps) => {
     const {
@@ -39,6 +40,7 @@ export const Input = (props: InputProps) => {
         maxLength,
         name,
         isScroll,
+        readOnly,
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isWrapperFocus, setIsWrapperFocus] = useState<boolean>(false);
@@ -103,6 +105,7 @@ export const Input = (props: InputProps) => {
                         name={name}
                         className="w-full outline-none body1"
                         inputMode={isInputModeNone ? 'none' : 'text'}
+                        readOnly={readOnly}
                     />
                 ) : (
                     <textarea
@@ -117,12 +120,11 @@ export const Input = (props: InputProps) => {
                         rows={rows}
                         maxLength={maxLength}
                         inputMode={isInputModeNone ? 'none' : 'text'}
+                        readOnly={readOnly}
                     />
                 )}
                 {value && value.toString().length > 0 && !disabled ? (
-                    <div onClick={handleDelete}>
-                        <Delete />
-                    </div>
+                    <div onClick={handleDelete}>{!readOnly ? <Delete /> : null}</div>
                 ) : null}
                 {Icon(icon)}
             </div>

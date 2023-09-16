@@ -74,6 +74,11 @@ export default function NotTodoPage() {
         setIsMenuOpen(true);
     };
 
+    const handleMoveDetailPage = (nottodo: nottodoProps) => {
+        setCurrentNottodo(nottodo);
+        router(`/nottodo/edit/${nottodo.notToDoId}?state=complete`);
+    };
+
     return (
         <div className="flex flex-col min-h-[calc((100vh-60px)-56px)] bg-gray-50">
             <div className="sticky top-0">
@@ -114,6 +119,7 @@ export default function NotTodoPage() {
                         endDate={new Date(v.endDate)}
                         goal={v.goal}
                         openMenu={() => handleOpenMenu(v)}
+                        onClick={v.progressState === 'COMPLETE' ? () => handleMoveDetailPage(v) : () => null}
                     />
                 ))}
             {nottodoList.filter((v) => (progressState !== '' ? v.progressState === progressState : true)).length < 3 ? (

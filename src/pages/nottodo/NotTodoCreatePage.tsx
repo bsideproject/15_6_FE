@@ -41,11 +41,13 @@ export default function NotTodoCreatePage() {
 
     const [titleHelpText, setTitleHelpText] = useState<string>('');
     const [dateHelpText, setDateHelpText] = useState<string>('');
+    const [isComplete, setIsComplete] = useState<boolean>(false);
 
     useEffect(() => {
         if (params && params.id) {
             setIsEditPage(true);
             if (currentNottodo) {
+                setIsComplete(currentNottodo.progressState === 'COMPLETE');
                 setTitle(currentNottodo.notToDoText);
                 setStartDate(new Date(currentNottodo.startDate));
                 setEndDate(new Date(currentNottodo.endDate));
@@ -260,6 +262,7 @@ export default function NotTodoCreatePage() {
                     helperText={titleHelpText}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleTitle(e)}
                     placeHolder="ex. 저녁 먹은 후 야식 참기"
+                    readOnly={isComplete}
                 />
                 <div className="h-[60px] w-full" />
                 <div className="flex items-center mb-3">
@@ -276,9 +279,10 @@ export default function NotTodoCreatePage() {
                         setValue={setInputStartDate}
                         isWarning={!!dateHelpText}
                         isInputModeNone
-                        onFocus={() => handleFocus('start')}
+                        onFocus={!isComplete ? () => handleFocus('start') : () => null}
                         onChange={() => null}
                         placeHolder="시작일 입력"
+                        readOnly={isComplete}
                     />
                     <div className="mx-3 body1 text-gray-500">~</div>
                     <Input
@@ -288,9 +292,10 @@ export default function NotTodoCreatePage() {
                         setValue={setInputEndDate}
                         isWarning={!!dateHelpText}
                         isInputModeNone
-                        onFocus={() => handleFocus('end')}
+                        onFocus={!isComplete ? () => handleFocus('end') : () => null}
                         onChange={() => null}
                         placeHolder="종료일 입력"
+                        readOnly={isComplete}
                     />
                 </div>
                 {dateHelpText ? <div className="mt-1 title3 text-negative">{dateHelpText}</div> : null}
@@ -331,6 +336,7 @@ export default function NotTodoCreatePage() {
                     setValue={setGoal}
                     onChange={(e) => setGoal(e.target.value)}
                     placeHolder="ex. 3kg 감량하기"
+                    readOnly={isComplete}
                 />
                 <div className="body2 text-gray-600 mt-2">목표가 명확할수록 성공 확률이 높아져요!</div>
                 <div className="h-[60px] w-full" />
@@ -348,6 +354,7 @@ export default function NotTodoCreatePage() {
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
                         rows={1}
                         maxLength={100}
+                        readOnly={isComplete}
                     />
                     <Input
                         type="textarea"
@@ -358,6 +365,7 @@ export default function NotTodoCreatePage() {
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
                         rows={1}
                         maxLength={100}
+                        readOnly={isComplete}
                     />
                     <Input
                         type="textarea"
@@ -368,15 +376,18 @@ export default function NotTodoCreatePage() {
                         placeHolder="절제할 나를 응원할 메시지를 입력해주세요."
                         rows={1}
                         maxLength={100}
+                        readOnly={isComplete}
                     />
                 </div>
                 <div className="w-full mb-24"></div>
             </div>
 
             {/* next button */}
-            <div className="fixed bottom-0 left-0 w-full h-[88px] border-t border-t-gray bg-white">
-                {renderButton(isEditPage)}
-            </div>
+            {!isComplete && (
+                <div className="fixed bottom-0 left-0 w-full h-[88px] border-t border-t-gray bg-white">
+                    {renderButton(isEditPage)}
+                </div>
+            )}
         </div>
     );
 }

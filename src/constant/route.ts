@@ -12,6 +12,12 @@ export const routeTitle = [
     { path: '/profile/contact', en: 'Contact Us', ko: '문의/건의하기', img: false },
     { path: '/badge', en: 'badge', ko: '뱃지', img: false },
 ];
+export const completeJson = {
+    path: '/nottodo/edit/state',
+    en: 'complete',
+    ko: '종료된 낫투두',
+    img: false,
+};
 
 export const headerHiddenPaths = ['/login', '/profile', '/'];
 export const headerBackPaths = [

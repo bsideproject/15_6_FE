@@ -5,6 +5,7 @@ import {
     routeTitle,
     headerBackPaths,
     headerClosePaths,
+    completeJson,
 } from '@/constant/route';
 
 export const useIsBack = () => {
@@ -30,15 +31,17 @@ export const useHasBottomNavBar = () => {
 export const useTitle = (lang: 'en' | 'ko'): [string, boolean] => {
     const location = useLocation();
 
-    const result = routeTitle.find((route) => {
+    let result = routeTitle.find((route) => {
         // 예외 사항
         if (location.pathname.startsWith('/nottodo/edit') && route.path === '/nottodo/edit') {
-            return route;
+            return true;
         }
         return location.pathname === route.path;
     });
 
     if (result) {
+        // 예외 사항
+        if (location.search) result = completeJson;
         if (lang === 'ko') {
             return [result.ko, result.img];
         } else {
